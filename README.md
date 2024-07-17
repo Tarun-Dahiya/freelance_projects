@@ -1,3 +1,17 @@
+# Webservices Starter Project (Metronic 9)
+
+## updating drawers:
+documentation for drawers in Metronic 9:
+```
+https://keenthemes.com/metronic/tailwind/docs/components/drawer#sidebar_menu
+```
+creating a drawer relies on a drawer-toggle and an id. We maintain a list of drawers and their attributes in:
+```
+/Metronic9/src/components/drawers/drawerInfo.ts
+```
+to make a new drawer, update the appDrawers object within this file and import the getDrawers function into your page. Look at the 'App Switcher' drawer in the navbar for an example of this configuration.
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
