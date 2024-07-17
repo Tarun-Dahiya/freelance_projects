@@ -1,6 +1,9 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
+	fontFamily: {
+		sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+	},
 	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 	safelist: [
 		'demo1',
