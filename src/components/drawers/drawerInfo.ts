@@ -8,6 +8,7 @@ const appDrawers: Drawer[] = [
     { id: 'drawer_1', name: 'App Switcher', drawerToggle: '#drawer_1' },
     { id: 'drawer_2', name: 'Settings', drawerToggle: '#drawer_2' },
     { id: 'drawer_3', name: 'Mobile Navigation', drawerToggle: '#drawer_3' },
+    { id: 'drawer_4', name: 'User Guide', drawerToggle: '#drawer_4' },
 ]
 
 export const getDrawer = (name: string) => {

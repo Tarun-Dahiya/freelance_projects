@@ -1,8 +1,8 @@
 import MenuFrame from "../MenuFrame";
 
-const PrimaryLinkContent = ({title}:{title:string}) => {
+const PrimaryLinkContent = ({title, offset}:{title:string, offset?:string}) => {
     return (
-        <MenuFrame>
+        <MenuFrame offset={offset} title={title}>
             <div className="bg-gray-100 menu menu-default flex flex-col border rounded-lg w-full max-w-56 py-2" data-menu="true">
                 <div className="menu-item">
                     <a className="menu-link" href="#">

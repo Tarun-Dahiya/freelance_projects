@@ -1,134 +1,43 @@
+import { ReactNode } from "react";
 import MenuFrame from "../MenuFrame";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSunCloud, faMoonCloud, faLaptopMobile } from '@fortawesome/pro-duotone-svg-icons';
 
-const ThemeSelector = () => {
+const ThemeSelector = ({ title, offset, handleThemeChange, maxWidth = 'max-w-56' }: { title: string | ReactNode, offset?: string, handleThemeChange: (value: string) => void, maxWidth?: string }) => {
     return (
-        <MenuFrame>
-            <div className="bg-gray-100 menu menu-default flex flex-col border rounded-lg w-full max-w-56 py-2" data-menu="true">
+        <MenuFrame title={title} offset={offset} maxWidth={maxWidth}>
+            <div className={`menu menu-default flex flex-col border rounded-lg w-full ${maxWidth} py-2`} data-menu="true">
                 <div className="menu-item">
-                    <a className="menu-link" href="#">
+                    <a className="menu-link" href="#" onClick={() => handleThemeChange('light')}>
                         <span className="menu-icon">
-                            <i className="ki-outline ki-badge">
-                            </i>
+                            <FontAwesomeIcon icon={faSunCloud} className="text-yellow-500 dark:text-yellow-100" size='lg' />
                         </span>
                         <span className="menu-title">
-                            Menu item 1
+                            Light Mode!
+                        </span>
+                    </a>
+                </div>
+
+                <div className="menu-item">
+                    <a className="menu-link" href="#" onClick={() => handleThemeChange('dark')} >
+                        <span className="menu-icon">
+                            <FontAwesomeIcon icon={faMoonCloud} className='text-purple-800 dark:text-purple-100' size='lg' />
+                        </span>
+                        <span className="menu-title">
+                            Dark Mode
                         </span>
                     </a>
                 </div>
                 <div className="menu-item" data-menu-item-toggle="accordion" data-menu-item-trigger="click">
-                    <a className="menu-link" href="#">
+                    <a className="menu-link" href="#" onClick={() => handleThemeChange('system')}>
                         <span className="menu-icon">
-                            <i className="ki-outline ki-profile-circle">
-                            </i>
+                            <FontAwesomeIcon icon={faLaptopMobile} className='text-blue-800 dark:text-blue-100' size='lg' />
                         </span>
                         <span className="menu-title">
-                            Submenu 1
-                        </span>
-                        <span className="menu-arrow">
-                            <i className="ki-outline ki-down menu-item-show:hidden">
-                            </i>
-                            <i className="ki-outline ki-up hidden menu-item-show:block">
-                            </i>
+                            System
                         </span>
                     </a>
-                    <div className="menu-accordion">
-                        <div className="menu-item">
-                            <a className="menu-link" href="#">
-                                <span className="menu-icon">
-                                    <i className="ki-outline ki-badge">
-                                    </i>
-                                </span>
-                                <span className="menu-title">
-                                    Submenu item 1
-                                </span>
-                            </a>
-                        </div>
-                        <div className="menu-item">
-                            <a className="menu-link" href="#">
-                                <span className="menu-icon">
-                                    <i className="ki-outline ki-badge">
-                                    </i>
-                                </span>
-                                <span className="menu-title">
-                                    Submenu item 2
-                                </span>
-                            </a>
-                        </div>
-                        <div className="menu-item">
-                            <a className="menu-link" href="#">
-                                <span className="menu-icon">
-                                    <i className="ki-outline ki-badge">
-                                    </i>
-                                </span>
-                                <span className="menu-title">
-                                    Submenu item 3
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div className="menu-item">
-                    <a className="menu-link" href="#">
-                        <span className="menu-icon">
-                            <i className="ki-outline ki-setting-2">
-                            </i>
-                        </span>
-                        <span className="menu-title">
-                            Menu item 2
-                        </span>
-                    </a>
-                </div>
-                <div className="menu-item" data-menu-item-toggle="accordion" data-menu-item-trigger="click">
-                    <a className="menu-link" href="#">
-                        <span className="menu-icon">
-                            <i className="ki-outline ki-message-programming">
-                            </i>
-                        </span>
-                        <span className="menu-title">
-                            Submenu 2
-                        </span>
-                        <span className="menu-arrow">
-                            <i className="ki-outline ki-down menu-item-show:hidden">
-                            </i>
-                            <i className="ki-outline ki-up hidden menu-item-show:block">
-                            </i>
-                        </span>
-                    </a>
-                    <div className="menu-accordion">
-                        <div className="menu-item">
-                            <a className="menu-link" href="#">
-                                <span className="menu-icon">
-                                    <i className="ki-outline ki-badge">
-                                    </i>
-                                </span>
-                                <span className="menu-title">
-                                    Submenu item 1
-                                </span>
-                            </a>
-                        </div>
-                        <div className="menu-item">
-                            <a className="menu-link" href="#">
-                                <span className="menu-icon">
-                                    <i className="ki-outline ki-badge">
-                                    </i>
-                                </span>
-                                <span className="menu-title">
-                                    Submenu item 2
-                                </span>
-                            </a>
-                        </div>
-                        <div className="menu-item">
-                            <a className="menu-link" href="#">
-                                <span className="menu-icon">
-                                    <i className="ki-outline ki-badge">
-                                    </i>
-                                </span>
-                                <span className="menu-title">
-                                    Submenu item 3
-                                </span>
-                            </a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </MenuFrame>

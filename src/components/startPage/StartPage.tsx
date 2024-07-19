@@ -1,14 +1,14 @@
 const StartPage = () => {
     return (
-        <div className="h-screen flex flex-col items-center bg-gray-300">
-            <div className="bg-slate-100 dark:bg-slate-300 rounded-md my-5 w-[97%] p-5 shadow-md">
+        <div className='flex flex-col items-center mx-4'>
+            <div className="bg-slate-100 dark:bg-slate-300 rounded-md my-5 w-full p-5 shadow-md">
                 <form>
                     <h1>search form:</h1>
                     <input className="p-1 rounded-sm m-2" type="text" placeholder="search" />
                     <button className="btn-primary px-4 py-1 rounded-md">🔍</button>
                 </form>
             </div>
-            <div className="bg-slate-100 dark:bg-slate-300 rounded-md my-5 w-[97%] p-5 shadow-md">
+            <div className="bg-slate-100 dark:bg-slate-300 rounded-md my-5 w-full p-5 shadow-md">
                 <table>
                     <thead>
                         <tr>
@@ -40,9 +40,9 @@ const StartPage = () => {
                         </tr>
                     </tbody>
                 </table>
+
             </div>
         </div>
     );
 }
-
 export default StartPage;

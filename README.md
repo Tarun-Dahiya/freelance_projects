@@ -1,11 +1,33 @@
 # Webservices Starter Project (Metronic 9)
 
+# Configuration:
+update the web.config file in the public directory:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <httpErrors errorMode="DetailedLocalOnly">
+            <remove statusCode="404" subStatusCode="-1" />
+            <error statusCode="404" prefixLanguageFilePath="" path="/Webservices/metronic9/index.html" responseMode="ExecuteURL" />
+        </httpErrors>
+    </system.webServer>
+</configuration>
+
+```
+update 
+```
+path="/Webservices/metronic9/index.html"
+```
+based on your requirements.
+
+inside src/main.tsx update the basename with that same path.
+
+
 ## updating drawers:
-documentation for drawers in Metronic 9:
-```
-https://keenthemes.com/metronic/tailwind/docs/components/drawer#sidebar_menu
-```
-creating a drawer relies on a drawer-toggle and an id. We maintain a list of drawers and their attributes in:
+documentation for drawers in Metronic 9 can be found at https://keenthemes.com/metronic/tailwind/docs/components/drawer#sidebar_menu
+
+Creating a drawer relies on a drawer-toggle and an id. We maintain a list of drawers and their attributes in:
 ```
 /Metronic9/src/components/drawers/drawerInfo.ts
 ```

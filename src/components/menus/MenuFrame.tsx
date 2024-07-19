@@ -1,20 +1,35 @@
 import { ReactNode } from "react";
 
-const MenuFrame = ({ children } : { children: ReactNode }) => {
+type MenuFrameProps = {
+    children: ReactNode,
+    title: string | ReactNode,
+    offset?: string
+    maxWidth?: string
+}
+
+const MenuFrame = ({ children, title, offset = '0px 0px', maxWidth='max-w-56' }: MenuFrameProps) => {
     return (
-        <div className="dropdown" data-dropdown="true" data-dropdown-trigger="click" data-dropdown-offset="-10px, 15px">
-            <button className="dropdown-toggle btn btn-icon-xs">
-                {/* if we have an icon we should show that here instead of the title */}
-                <span className="font-sans text-md">Menu-1</span> {/* should pass title as prop */}
-                <i className="ki-outline ki-down dropdown-open:hidden">
-                </i>
-                <i className="ki-outline ki-up hidden dropdown-open:block">
-                </i>
-            </button>
-            <div className="dropdown-content w-full max-w-56">
-                {children}
-            </div>
-        </div>
+        <div 
+        className="dropdown" 
+        data-dropdown="true" 
+        data-dropdown-trigger="click" 
+        data-dropdown-offset={offset}
+        >
+            {typeof title === 'string' ? (
+                <button className="dropdown-toggle btn btn-icon-xs">
+                    <span className="font-sans text-md">{title}</span>
+                    <i className="ki-outline ki-down dropdown-open:hidden">
+                    </i>
+                    <i className="ki-outline ki-up hidden dropdown-open:block">
+                    </i>
+                </button>
+            ) : (
+                <span className="dropdown-toggle">{title}</span>
+            )}
+    <div className={`dropdown-content w-full bg-gray-100 ${maxWidth} menuFrame`} style={{position: 'absolute', zIndex: '1000', transform: 'translateZ(0)'}}>
+        {children}
+    </div>
+        </div >
     )
 }
 
