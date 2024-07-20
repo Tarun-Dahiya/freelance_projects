@@ -3,15 +3,17 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSquarePollVertical, faSliders, faSquareQuestion, faSunCloud, faMoonCloud, faCircleChevronDown, faSquareEllipsis } from "@fortawesome/pro-duotone-svg-icons";
 import { faGlobe } from '@fortawesome/pro-regular-svg-icons'
-import AppSwitcher from "./drawers/content/AppSwitcher";
-import Settings from "./drawers/content/Settings";
-import MobileNavigation from "./drawers/content/MobileNavigation";
 import { getDrawer } from "./drawers/drawerInfo"; // update drawerInfo to add additional drawers
+import { getUser } from "../lib/actions";
 import ThemeSelector from "./menus/content/ThemeSelector";
 import PrimaryLinkContent from "./menus/content/PrimaryLinkContent";
 import SecondaryLinkContent from "./menus/content/SecondaryLinkContent";
 import UserGuide from "./drawers/content/UserGuide";
-import { getUser } from "../lib/actions";
+import AppSwitcher from "./drawers/content/AppSwitcher";
+import Settings from "./drawers/content/Settings";
+import MobileNavigation from "./drawers/content/MobileNavigation";
+
+import UserSettings from "./drawers/content/UserSettings";
 
 const Navbar = () => {
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
@@ -19,7 +21,7 @@ const Navbar = () => {
     const [avatar, setAvatar] = useState<string>("/webservices/metronic9/media/avatars/blank.png")
     const menuOffset: string = "0px, 20px"
     const iconMenuOffset: string = "0px, 25px"
-    const isDevelopment = window.location.href.split('/').slice(0,3).join('/').includes('development')
+    const isDevelopment = window.location.href.split('/').slice(0, 3).join('/').includes('development')
     const bgColor = isDevelopment ? 'bg-red-700' : 'bg-blue-800'
 
     const handleThemeChange = (value: string) => {
@@ -115,14 +117,23 @@ const Navbar = () => {
                             </li>
                             <li
                                 data-drawer-toggle={getDrawer('User Guide')!.drawerToggle}
-                                aria-label="help" className="flex items-center hover:text-blue-300 cursor-pointer"><FontAwesomeIcon icon={faSquareQuestion} size='lg' /></li>
-                            <li aria-label="theme" className="flex items-center hover:text-blue-300 cursor-pointer">
+                                aria-label="help"
+                                className="flex items-center hover:text-blue-300 cursor-pointer"
+                            >
+                                <FontAwesomeIcon icon={faSquareQuestion} size='lg' />
+                            </li>
+                            <li
+                                aria-label="theme"
+                                className="flex items-center hover:text-blue-300 cursor-pointer"
+                            >
                                 <ThemeSelector title={themeIcon} offset={iconMenuOffset} handleThemeChange={handleThemeChange} maxWidth={'max-w-48'} />
                             </li>
-                            <li className="flex items-center hover:text-blue-300 cursor-pointer">
-                                <Link to='/userSettings'>
-                                    <img src={avatar} alt="profile" className="h-10 w-10 rounded-lg" />
-                                </Link>
+                            <li
+                                data-drawer-toggle={getDrawer('User Settings')!.drawerToggle}
+                                aria-label="userSettings"
+                                className="flex items-center hover:text-blue-300 cursor-pointer"
+                            >
+                                <img src={avatar} alt="profile" className="h-10 w-10 rounded-lg" />
                             </li>
                             <li
                                 data-drawer-toggle={getDrawer('Mobile Navigation')!.drawerToggle}
@@ -140,6 +151,8 @@ const Navbar = () => {
             <Settings drawerId={getDrawer('Settings')!.id} />
             <MobileNavigation drawerId={getDrawer('Mobile Navigation')!.id} />
             <UserGuide drawerId={getDrawer('User Guide')!.id} />
+            <UserSettings drawerId={getDrawer('User Settings')!.id} />
+            
         </>
     )
 }

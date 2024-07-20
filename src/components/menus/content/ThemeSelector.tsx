@@ -28,7 +28,7 @@ const ThemeSelector = ({ title, offset, handleThemeChange, maxWidth = 'max-w-56'
                         </span>
                     </a>
                 </div>
-                <div className="menu-item" data-menu-item-toggle="accordion" data-menu-item-trigger="click">
+                <div className="menu-item" data-menu-item-toggle="accordion" data-menu-item-trigger="click" >
                     <a className="menu-link" href="#" onClick={() => handleThemeChange('system')}>
                         <span className="menu-icon">
                             <FontAwesomeIcon icon={faLaptopMobile} className='text-blue-800 dark:text-blue-100' size='lg' />

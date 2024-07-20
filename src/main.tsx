@@ -7,7 +7,6 @@ import StartPage from './components/startPage/StartPage.tsx';
 import NotFoundPage from './components/notFoundPage/NotFoundPage.tsx';
 import SavedSearchPage from './components/savedSearchPage/SavedSearchPage.tsx'
 import ReportsPage from './components/reportsPage/ReportsPage.tsx'
-import UserSettingsPage from './components/userSettingsPage/UserSettingsPage.tsx'
 
 const router = createBrowserRouter(
   [
@@ -28,10 +27,6 @@ const router = createBrowserRouter(
           path: "/reports",
           element: <ReportsPage />,
         },
-        {
-          path: "/userSettings",
-          element: <UserSettingsPage />,
-        }
       ],
     },
   ],
