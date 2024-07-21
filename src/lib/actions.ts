@@ -13,7 +13,6 @@ export type SampleTableData = {
 }
 
 export const getSampleTableData = () : SampleTableData[] => {
-    console.log({sampleTableData})
 return sampleTableData;
 }
 
@@ -64,5 +63,5 @@ export const getWebApps = async (): Promise<AppList[]> => {
     } catch (error) {
         console.error(error);
     }
-    return (process.env.NODE_ENV === 'development') ? sampleAppList : []
+    return (process.env.NODE_ENV === 'development') ? sampleAppList : []    
 }

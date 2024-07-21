@@ -5,7 +5,11 @@ import { getSampleTableData, SampleTableData } from '../../lib/actions'
 
 const SampleTable = () => {
     const [tableData, setTableData] = useState<SampleTableData[]>([])
+    const [selectedRows, setSelectedRows] = useState<SampleTableData[]>([])
     const columnHelper = createColumnHelper<SampleTableData>()
+
+    const selectedIdx = Object.keys(selectedRows).map(id => parseInt(id))
+    const selectedData = tableData.filter((_, idx) => selectedIdx.includes(idx))
 
     useEffect(() => {
         const fetchData = async () => {
@@ -15,22 +19,22 @@ const SampleTable = () => {
         fetchData()
     }, [])
 
-    
+
     const renderBadgeColor = (status: string) => {
         switch (status) {
             case 'online':
-                return 'bg-green-200 text-green-800'
+                return 'badge badge-sm badge-outline badge-success'
             case 'offline':
-                return 'bg-red-200 text-red-800'
+                return 'badge badge-sm badge-outline badge-danger'
             case 'away':
-                return 'bg-yellow-200 text-yellow-800'
+                return 'badge badge-sm badge-outline badge-warning'
             case 'vacation':
-                return 'bg-blue-200 text-blue-800'
+                return 'badge badge-sm badge-outline badge-info'
             default:
-                return 'bg-gray-200 text-gray-800'
+                return 'badge badge-sm badge-outline badge-secondary'
         }
     }
-    const renderProgressBar = (progress: number|null) => {
+    const renderProgressBar = (progress: number | null) => {
         const percent = progress || 0
         const renderColor = (progress: number) => {
             if (progress < 30) {
@@ -43,25 +47,23 @@ const SampleTable = () => {
         }
         return (
             <div className='w-full'>
-            <div className='text-3xs flex justify-end text-slate-400 mb-1'>{progress}%</div>
-            <div className={`progress ${renderColor(percent)}`}>
-                <div className='progress-bar' style={{ width: `${percent}%` }}></div>
-            </div>
+                <div className='text-3xs flex justify-end text-slate-400 mb-1'>{progress}%</div>
+                <div className={`progress ${renderColor(percent)}`}>
+                    <div className='progress-bar' style={{ width: `${percent}%` }}></div>
+                </div>
             </div>
         )
     }
 
-
-
-    const columns = [
+    const columns: Column<SampleTableData>[] = [
         columnHelper.accessor('firstName', {
             cell: info => info.getValue(),
-            header: () => <span>First Name</span>            
+            header: () => <span>First Name</span>,
         }),
         columnHelper.accessor(row => row.lastName, {
             id: 'lastName',
             cell: info => <span>{info.getValue()}</span>,
-            header: () => <span>Last Name</span>
+            header: () => <span>Last Name</span>,
         }),
         columnHelper.accessor('status', {
             header: 'Status',
@@ -70,12 +72,10 @@ const SampleTable = () => {
                     {info.getValue()}
                 </span>
             ),
-            // footer: info => info.column.id,
             footer: () => {
                 const onlineUsers = tableData.filter(row => row.status === 'online').length;
                 return <span>Online Users: {onlineUsers}</span>;
             },
-
         }),
         columnHelper.accessor('age', {
             header: () => 'Age',
@@ -95,24 +95,51 @@ const SampleTable = () => {
                     </div>
                 )
             },
-
         }),
         columnHelper.accessor('visits', {
             header: () => <span>Visits</span>,
         }),
         columnHelper.accessor('progress', {
             // can make use of tailwindcss to hide the column for responsive design
-            header: () => <span className='hidden md:flex'>Progress</span>,
+            header: () => <span className='hidden md:inline-block'>Progress</span>,
             cell: info => (<span className='hidden md:flex'>{renderProgressBar(info.renderValue())}</span>),
         }),
+        {
+            id: 'actions',
+            cell: (props: { row: { original: { firstName: string, lastName: string } } }) => {
+                const firstName = props.row.original.firstName
+                const lastName = props.row.original.lastName
+                return (
+                    <button onClick={() => alert(`${firstName} ${lastName}`)} className='btn btn-sm btn-outline btn-warning flex gap-2'>
+                        <i className="ki-outline ki-message-text-2" />
+                        Alert
+                    </button>
+                )
+            },
+            header: 'Actions',
+            enableSorting: false
+        }
     ]
     return (
         <div className='card w-full mt-4'>
-            <div className='card-header'>
+            <div className='card-header min-h-16'>
                 <h1 className='text-xl'>Sample Table</h1>
+                {selectedData.length
+                    ? <button className='btn btn-md btn-outline btn-info flex gap-2 items-center' onClick={() => alert(JSON.stringify(selectedData))}>
+                        <i className="ki-outline ki-check-squared"></i>
+                        See Selections
+                    </button>
+                    : null
+                }
             </div>
             <div className='card-body'>
-                <CommonTable columns={columns} defaultData={tableData} />
+                <CommonTable 
+                    columns={columns} 
+                    data={tableData} 
+                    hasCheckbox={true} // optional prop; false by default.
+                    rowSelection={selectedRows} // required for checkbox selection
+                    setRowSelection={setSelectedRows} // required for checkbox selection
+                />
             </div>
         </div>
     )
