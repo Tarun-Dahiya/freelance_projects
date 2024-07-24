@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { createColumnHelper } from '@tanstack/react-table'
+import { createColumnHelper, Row } from '@tanstack/react-table'
 import CommonTable from '../commonTable/CommonTable'
 import { getSampleTableData, SampleTableData } from '../../lib/actions'
 
@@ -55,7 +55,7 @@ const SampleTable = () => {
         )
     }
 
-    const columns: Column<SampleTableData>[] = [
+    const columns = [
         columnHelper.accessor('firstName', {
             cell: info => info.getValue(),
             header: () => <span>First Name</span>,
@@ -110,16 +110,25 @@ const SampleTable = () => {
                 const firstName = props.row.original.firstName
                 const lastName = props.row.original.lastName
                 return (
-                    <button onClick={() => alert(`${firstName} ${lastName}`)} className='btn btn-sm btn-outline btn-warning flex gap-2'>
+                    <button onClick={() => alert(`${firstName} ${lastName}`)} className='hidden md:flex btn btn-sm btn-outline btn-warning gap-2'>
                         <i className="ki-outline ki-message-text-2" />
                         Alert
                     </button>
                 )
             },
-            header: 'Actions',
+            header: () => <span className='hidden md:inline-block'>Actions</span>,
             enableSorting: false
         }
     ]
+
+    const renderDisclosureContent = ({row} : {row: Row<SampleTableData>}) => {
+        return (
+            <pre className='text-xs'>
+                {JSON.stringify(row.original, null, 2)}
+            </pre>
+        )
+    }
+    
     return (
         <div className='card w-full mt-4'>
             <div className='card-header min-h-16'>
@@ -135,10 +144,14 @@ const SampleTable = () => {
             <div className='card-body'>
                 <CommonTable 
                     columns={columns} 
-                    data={tableData} 
-                    hasCheckbox={true} // optional prop; false by default.
-                    rowSelection={selectedRows} // required for checkbox selection
-                    setRowSelection={setSelectedRows} // required for checkbox selection
+                    data={tableData}
+                    // optional props for including checkbox selection
+                    hasCheckbox={true}
+                    rowSelection={selectedRows} 
+                    setRowSelection={setSelectedRows}
+                    // optional props for including disclosure content
+                    hasDisclosure={true}
+                    disclosureContent={renderDisclosureContent}
                 />
             </div>
         </div>
