@@ -1,23 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createColumnHelper, Row } from '@tanstack/react-table'
 import CommonTable from '../commonTable/CommonTable'
-import { getSampleTableData, SampleTableData } from '../../lib/actions'
+import { SampleTableData } from '../../lib/actions'
 
-const SampleTable = () => {
-    const [tableData, setTableData] = useState<SampleTableData[]>([])
+const SampleTable = ({tableData}:{tableData:SampleTableData[]}) => {
     const [selectedRows, setSelectedRows] = useState<SampleTableData[]>([])
-    const columnHelper = createColumnHelper<SampleTableData>()
-
     const selectedIdx = Object.keys(selectedRows).map(id => parseInt(id))
     const selectedData = tableData.filter((_, idx) => selectedIdx.includes(idx))
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await getSampleTableData()
-            setTableData(data)
-        }
-        fetchData()
-    }, [])
 
 
     const renderBadgeColor = (status: string) => {
@@ -54,6 +43,8 @@ const SampleTable = () => {
             </div>
         )
     }
+
+    const columnHelper = createColumnHelper<SampleTableData>()
 
     const columns = [
         columnHelper.accessor('firstName', {

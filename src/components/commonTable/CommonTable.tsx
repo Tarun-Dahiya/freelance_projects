@@ -85,9 +85,33 @@ const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false
         const disclosureColumn: ColumnDef<any>[] = [
             {
                 id: 'select',
-                header: () => null,
+                header: () => {
+                    //expand all rows
+                    const expandAll = () => {
+                        table.getExpandedRowModel().rows.forEach(row => {
+                            if (!row.getIsExpanded() && row.getCanExpand()) {
+                            row.getCanExpand() && row.getToggleExpandedHandler()()
+                            }
+                        })
+                    }
+                    //collapse all rows
+                    const collapseAll = () => {
+                        table.getExpandedRowModel().rows.forEach(row => {
+                            if (row.getIsExpanded() && row.getCanExpand()) {
+                            row.getCanExpand() && row.getToggleExpandedHandler()()
+                            }
+                        })
+                    }
+                    return (
+                        <div className='flex gap-1'>
+                            <span className='badge badge-outline badge-xs badge-success cursor-pointer'onClick={expandAll}> + </span>
+                            <span className='badge badge-outline badge-xs badge-danger cursor-pointer' onClick={collapseAll}> - </span>
+                        </div>
+                    )
+                },
                 cell: ({ row }: { row: any }) => {
                     return row.getCanExpand() ? (
+                        <div className='flex justify-center'>
                         <button
                             {...{
                                 onClick: row.getToggleExpandedHandler(),
@@ -96,6 +120,7 @@ const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false
                         >
                             {row.getIsExpanded() ? <i className="ki-filled ki-down"></i> : <i className="ki-filled ki-right"></i>}
                         </button>
+                        </div>
                     ) : (
                         '🔵'
                     )

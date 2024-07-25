@@ -22,7 +22,37 @@ const SearchForm = () => {
             {showForm &&
                 <>
                     <div className="card-body">
-                        [form goes here]
+                        <div className='grid grid-cols-4 gap-2 mx-4'>
+                            <div>
+                                <label>FirstName</label>
+                                <input type="text" className="input" placeholder="First Name" />
+                            </div>
+                            <div>
+                                <label>LastName</label>
+                                <input type="text" className="input" placeholder="Last Name" />
+                            </div>
+                            <div>
+                                <label>status</label>
+                                <select className="input">
+                                    <option value="online">online</option>
+                                    <option value="away">away</option>
+                                    <option value="offline">offline</option>
+                                    <option value="vacation">vacation</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Age</label>
+                                <input type="number" className="input" placeholder="Age" />
+                            </div>
+                            <div>
+                                <label>Visits</label>
+                                <input type="number" className="input" placeholder="Age" />
+                            </div>
+                            <div>
+                                <label>Progress</label>
+                                <input type="number" className="input" placeholder="Age" />
+                            </div>
+                        </div>
                     </div>
                     <div className="card-footer">
                         <div className="flex w-full justify-end gap-2">
