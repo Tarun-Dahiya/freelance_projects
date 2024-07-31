@@ -139,7 +139,6 @@ const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false
             <table className='table table-auto align-middle text-gray-700 font-medium text-sm'>
                 <thead>
                     {table.getHeaderGroups().map((headerGroup, idx) => {
-                        console.log({ headerGroupID: headerGroup.id })
                         return (
                             <tr key={`${headerGroup.id}-${idx}`}>
                                 {headerGroup.headers.map((header, headerIdx) => (

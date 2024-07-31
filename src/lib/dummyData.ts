@@ -1,5 +1,6 @@
 
 export const sampleUser = {
+    USERID: 1,
     HOSTPLANT: 'Worcester',
     USERNAME: 'SKeane',
     USERLOCALE: 'Internal',

@@ -12,12 +12,15 @@ export type SampleTableData = {
     progress: number
 }
 
-export const getSampleTableData = () : SampleTableData[] => {
-return sampleTableData;
+export const getSampleTableData = async () : Promise<SampleTableData[]> => {
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    await delay(500);
+    return sampleTableData;
 }
 
 
 export type User = {
+    USERID: number;
     HOSTPLANT: string;
     USERNAME: string;
     USERLOCALE: string;
@@ -42,7 +45,7 @@ export const getUser = async (): Promise<User> => {
         const response = await axios.get(`/webservices/metronic9/api/common.cfc?method=getUser`);
         return response.data[0];
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
     return defaultUser;
 }

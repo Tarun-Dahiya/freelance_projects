@@ -25,7 +25,6 @@ const Navbar = () => {
     const bgColor = isDevelopment ? 'bg-red-700' : 'bg-blue-800'
 
     const handleThemeChange = (value: string) => {
-        console.log('value', value)
         value === 'dark' ? localStorage.setItem('theme', 'light') : localStorage.setItem('theme', 'dark')
         if (value === 'dark') {
             setIsDarkMode(true)
@@ -151,7 +150,7 @@ const Navbar = () => {
             <Settings drawerId={getDrawer('Settings')!.id} />
             <MobileNavigation drawerId={getDrawer('Mobile Navigation')!.id} />
             <UserGuide drawerId={getDrawer('User Guide')!.id} />
-            <UserSettings drawerId={getDrawer('User Settings')!.id} />
+            <UserSettings drawerId={getDrawer('User Settings')!.id}  setAvatar={setAvatar}/>
             
         </>
     )

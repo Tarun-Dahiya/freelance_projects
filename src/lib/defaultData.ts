@@ -1,4 +1,5 @@
 export const defaultUser = {
+    USERID: 0,
     HOSTPLANT: '',
     USERNAME: '',
     USERLOCALE: '',

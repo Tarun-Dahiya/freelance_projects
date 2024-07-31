@@ -26,7 +26,7 @@ const MenuFrame = ({ children, title, offset = '0px 0px', maxWidth='max-w-56' }:
             ) : (
                 <span className="dropdown-toggle">{title}</span>
             )}
-    <div className={`dropdown-content w-full bg-gray-100 ${maxWidth} menuFrame`} style={{position: 'absolute', zIndex: '1000', transform: 'translateZ(0)'}}>
+    <div className={`dropdown-content w-full bg-gray-100 ${maxWidth} menuFrame`} style={{position: 'absolute', transform: 'translateZ(0)'}}>
         {children}
     </div>
         </div >
