@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createElement, SetStateAction, Dispatch, ReactNode } from 'react';
+import React, { useState, useEffect, createElement, SetStateAction, Dispatch } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort } from '@fortawesome/pro-duotone-svg-icons'
 import { faSort as faUnsorted } from '@fortawesome/pro-solid-svg-icons'
@@ -14,25 +14,37 @@ import {
     getExpandedRowModel,
     ColumnDef,
     ColumnFiltersState,
+    RowSelectionState,
+    Row,
+    Updater,
 } from '@tanstack/react-table'
 import IndeterminateCheckbox from './IndeterminateCheckbox'
 
 
-type CommonTableProps = {
-    columns: any,
-    data: any,
+type CommonTableProps<T> = {
+    columns: ColumnDef<T, any>[],
+    data: T[],
     hasCheckbox?: boolean,
     hasDisclosure?: boolean,
-    disclosureContent?: ({ row }: { row: any }) => JSX.Element,
-    rowSelection?: any,
+    disclosureContent?: ({ row }: { row: Row<T> }) => JSX.Element,
+    rowSelection?: T[],
     setRowSelection?: Dispatch<SetStateAction<any>>,
 }
 
-const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false, rowSelection = [], setRowSelection, hasDisclosure = false, disclosureContent }: CommonTableProps) => {
-    const [data, setData] = useState(() => [...propData])
+const CommonTable = <T,>({ columns: propColumns, data: propData, hasCheckbox = false, rowSelection = [], setRowSelection, hasDisclosure = false, disclosureContent }: CommonTableProps<T>) => {
+    const [data, setData] = useState<T[]>(() => [...propData])
     const [columns, setColumns] = useState(() => [...propColumns])
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+    // Function to convert T[] to RowSelectionState
+    const rowSelectionState: RowSelectionState = rowSelection.reduce((acc, item) => {
+        const rowIndex = data.indexOf(item);
+        if (rowIndex !== -1) {
+            acc[rowIndex] = true;
+        }
+        return acc;
+    }, {} as RowSelectionState);
 
     const table = useReactTable({
         data,
@@ -43,11 +55,18 @@ const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false
         onSortingChange: setSorting,
         state: {
             columnFilters,
-            rowSelection,
+            rowSelection: rowSelectionState, // Use the converted RowSelectionState
             sorting,
         },
         enableRowSelection: true,
-        onRowSelectionChange: setRowSelection,
+        onRowSelectionChange: (newState: Updater<RowSelectionState>) => {
+            // Determine the new state
+            const newStateResolved = typeof newState === 'function' ? newState(rowSelectionState) : newState;
+
+            // Convert RowSelectionState back to T[] and call setRowSelection
+            const selectedRows = Object.keys(newStateResolved).map(key => data[parseInt(key)]);
+            setRowSelection && setRowSelection(selectedRows);
+        },
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -56,7 +75,7 @@ const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false
     })
 
     useEffect(() => {
-        const checkBoxColumn = [
+        const checkBoxColumn: ColumnDef<T>[] = [
             {
                 id: 'select',
                 header: ({ table }: { table: any }) => (
@@ -82,7 +101,7 @@ const CommonTable = ({ columns: propColumns, data: propData, hasCheckbox = false
                 ),
             },
         ]
-        const disclosureColumn: ColumnDef<any>[] = [
+        const disclosureColumn: ColumnDef<T>[] = [
             {
                 id: 'select',
                 header: () => {
