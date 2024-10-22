@@ -1,27 +1,33 @@
 # Webservices Starter Project (Metronic 9)
 
 # Configuration:
-update the web.config file in the public directory:
+1. update the web.config file in the public directory:
 
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <system.webServer>
-        <httpErrors errorMode="DetailedLocalOnly">
-            <remove statusCode="404" subStatusCode="-1" />
-            <error statusCode="404" prefixLanguageFilePath="" path="/Webservices/metronic9/index.html" responseMode="ExecuteURL" />
-        </httpErrors>
-    </system.webServer>
-</configuration>
+    ```
+    <?xml version="1.0" encoding="UTF-8"?>
+    <configuration>
+        <system.webServer>
+            <httpErrors errorMode="DetailedLocalOnly">
+                <remove statusCode="404" subStatusCode="-1" />
+                <error statusCode="404" prefixLanguageFilePath="" path="/Webservices/metronic9/index.html" responseMode="ExecuteURL" />
+            </httpErrors>
+        </system.webServer>
+    </configuration>
 
-```
-update 
-```
-path="/Webservices/metronic9/index.html"
-```
-based on your requirements.
+    ```
+    update 
+    ```
+    path="/Webservices/metronic9/index.html"
+    ```
 
-inside src/main.tsx update the basename with that same path.
+2. inside src/main.tsx update the basename with that same path.
+3. inside vite.config.ts update the base path
+4. inside App.tsx update the document title in the useEffect
+
+# Build Process
+1. Run 'npm install'
+2. Run 'npm run build' while developing
+3. Run 'npm run prod' to enable code splitting improving performance for production
 
 
 ## updating drawers:
