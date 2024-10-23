@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe } from '@fortawesome/pro-regular-svg-icons';
+import Select, { SingleValue } from 'react-select';
 
 const SearchForm = ({setSearchValues, handleEmailCSV}:{setSearchValues:(val:any) => void, handleEmailCSV:(val:any)=>void}) => {
     const [showForm, setShowForm] = useState<boolean>(true);
@@ -42,13 +43,23 @@ const SearchForm = ({setSearchValues, handleEmailCSV}:{setSearchValues:(val:any)
                             </div>
                             <div>
                                 <label>status</label>
-                                <select onChange={(event) => handleChange(event, 'status')} className="input">
-                                    <option value="">Select Status</option>
-                                    <option value="online">online</option>
-                                    <option value="away">away</option>
-                                    <option value="offline">offline</option>
-                                    <option value="vacation">vacation</option>
-                                </select>
+                            <Select
+                                classNames={{ //(not to be confused with className singular)
+                                    control: () => 'mt-[1px] dark:bg-light-active dark:border-black',
+                                    menu: () => 'dark:bg-light-active dark:border-black',
+                                    option: () => 'dark:text-slate-300 dark:bg-light-active dark:hover:bg-gray-400',
+                                    input: () => 'dark:text-slate-300',
+                                    placeholder: () => 'dark:text-slate-300',
+                                    singleValue: () => 'dark:text-slate-300',
+                                }}
+                                className="select p-0 border-0 w-full"
+                                options={['online', 'away', 'offline', 'vacation'].map((opt) => ({ value: opt, label: opt }))}
+                                onChange={((selectedOption) => setFormValues({
+                                    ...formValues,
+                                    status: selectedOption ? selectedOption.value : ''
+                                }))}
+                                placeholder="Select Status"
+                            />
                             </div>
                             <div>
                                 <label>Age</label>
