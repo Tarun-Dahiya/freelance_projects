@@ -26,7 +26,12 @@ const AvatarUpload = ({userId, src, setAvatar}:{userId:number, src:string, setAv
         formData.append('userId', userId.toString());
         console.log({formData, image: formData.get('image'),file: formData.get('file')});
         try {
-            const response = await axios.post('/webservices/metronic9/api/common.cfc?method=uploadAvatar', formData);
+            const response = await axios.post('/webservices/metronic9/api/common.cfc?method=uploadAvatar', {
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`
+                },
+                ...formData
+            });
             if (response.data.SUCCESS) {
                 setAvatar(base64Image);
             }

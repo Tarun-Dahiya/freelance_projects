@@ -1,15 +1,24 @@
 <cfcomponent>
 <!--- include webservices wide security functions --->
   <cfinclude template='/webservices/auth/apiFiles/Security/objectSecurity.cfc'>
+  <cfinclude template='/webservices/auth/apiFiles/Security/CSRF.cfc'>
 
 <!--- include app level utility functions --->
   <cfinclude template='./system/functions.cfc'>
 
 <!---
   getUser
+  getWebApps
+  uploadAvatar
 --->
 
   <cffunction name="getUser" access="remote" output="yes">
+    <cfset content = deserializeJSON(toString(getHTTPRequestData().content))>
+    <cfif not checkCSRF(content.headers.authorization)>
+      <cfset result = {success: false, message: 'Invalid CSRF Token'}>
+      <cfoutput>#serializeJSON(result, "struct")#</cfoutput>
+      <cfabort>
+    </cfif>
     <cftransaction isolation="read_uncommitted">
       <cfquery name="getUser" datasource="webUsers">
           SELECT
@@ -39,6 +48,12 @@
   </cffunction>
 
   <cffunction name="getWebApps" access="remote" output="yes">
+    <cfset content = deserializeJSON(toString(getHTTPRequestData().content))>
+    <cfif not checkCSRF(content.headers.authorization)>
+      <cfset result = {success: false, message: 'Invalid CSRF Token'}>
+      <cfoutput>#serializeJSON(result, "struct")#</cfoutput>
+      <cfabort>
+    </cfif>
     <cftry>
     <cfquery name="getWebApps" datasource="WebUsers" >
         SELECT
@@ -66,6 +81,12 @@
 
 
   <cffunction name="uploadAvatar" access="remote" output="yes">
+    <cfset content = deserializeJSON(toString(getHTTPRequestData().content))>
+    <cfif not checkCSRF(content.headers.authorization)>
+      <cfset result = {success: false, message: 'Invalid CSRF Token'}>
+      <cfoutput>#serializeJSON(result, "struct")#</cfoutput>
+      <cfabort>
+    </cfif>
     <cfset userId = FORM.userId>
     <cfset image = FORM.file>
     <cfif isDefined("FORM.file")>

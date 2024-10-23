@@ -4,49 +4,36 @@ import Navbar from './components/Navbar'
 import { Outlet } from "react-router";
 import { User } from "./lib/types.ts";
 import AppContext from "./components/AppContext.tsx";
-import axios from "axios";
+import { useAxios } from "./lib/hooks.ts";
 
 export default function App() {
   const [user, setUser] = useState<User>(new User())
 
-  let authToken = ''
-  if (localStorage.getItem('token')) {
-    authToken = localStorage.getItem('token')!
-  }
   const baseURL = document.URL.split('/').slice(0, 3).join('/')
 
+  const { request: getUser, data } = useAxios<User[]>('/Webservices/metronic9/api/common.cfc?method=getUser', false)
+
   useEffect(() => {
-    // get user details; if user cannot be retrieved or does not meet qualifications, redirect to login screen.
-    const getUser = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/Webservices/admin2/api/common.cfc?method=getUser`)
-        setUser(response.data[0])
-        const internal = response.data[0].USERLOCALE.toLowerCase() === 'internal'
-        if (!internal) { window.location.href = `${baseURL}/Webservices/auth/login` }
-        localStorage.removeItem('datatable_1')
-      } catch (err) {
-        console.log(err)
-        window.location.href = `${baseURL}/Webservices/auth/login`
-      }
-    }
     if (!baseURL.includes('localhost')) {
       getUser()
     }
-  }, [])
-
-  useEffect(() => {
     KTComponent.init()
     document.title = 'Metronic Starter'
   }, [])
 
+  useEffect(() => {
+    if (data) {
+      setUser(data[0])
+      const internal = data[0].USERLOCALE.toLowerCase() === 'internal'
+      if (!internal) { window.location.href = `${baseURL}/Webservices/auth/login` }
+      localStorage.removeItem('datatable_1')
+    }
+  }, [data])
+
   return (
     <AppContext.Provider value={
       {
-        apiData: {
-          baseURL,
-          authToken
-        },
-        userData: user,
+        userData: user
       }
     }>
       <div className="flex flex-col h-screen w-screen bg-gray-300 text-gray-950 dark:text-gray-50">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe } from '@fortawesome/pro-regular-svg-icons';
-import Select, { SingleValue } from 'react-select';
+import Select from 'react-select';
 
 const SearchForm = ({setSearchValues, handleEmailCSV}:{setSearchValues:(val:any) => void, handleEmailCSV:(val:any)=>void}) => {
     const [showForm, setShowForm] = useState<boolean>(true);
