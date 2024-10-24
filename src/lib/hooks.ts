@@ -12,31 +12,33 @@ const baseURL = document.URL.split('/').slice(0, 3).join('/')
  * 
  * @param path - The path to the API endpoint.
  * @param autoRequest - Whether to automatically perform the axios request.
+ * @param method - The (optional) HTTP method to use in the request.
  * @param params - The (optional) parameters to send in the axios request.
  * @returns The data from the POST request.
  */
-export const useAxios = <T,>(path: string, autoRequest: boolean, params?: object) => {
+export const useAxios = <T,>(path: string, autoRequest: boolean, method?: string, params?: object) => {
     const [data, setData] = useState<T>()
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<boolean>(false)
 
     const fetchData = async () => {
         try {
-            const response = await axios.post(`${baseURL}${path}`, {
+            const response = await axios({
+                method: method || 'POST',
+                url: `${baseURL}${path}`,
                 headers: {
                     Authorization: `${authToken}`
                 },
-                ...params
+                data: params
             })
-            console.log(path.split('method=').length > 1 ? path.split('method=')[1] : "GET", response.data)
-            if (response.data.includes('Invalid CSRF Token')) {
-                // Redirect to login page if CSRF token is invalid
+            console.log(path.split('method=').length > 1 ? path.split('method=')[1] : path, response.data)
+            if ('INVALIDTOKEN' in response.data) {
                 window.location.href = `${baseURL}/Webservices/auth/login`
                 return
             }
             setData(response.data)
         } catch (err) {
-            console.log(err)
+            console.error(err)
             setError(true)
         } finally {
             setLoading(false)
