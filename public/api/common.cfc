@@ -6,6 +6,21 @@
 <!--- include app level utility functions --->
   <cfinclude template='./system/functions.cfc'>
 
+<cftransaction isolation='read_uncommitted' >
+  <cfquery name='getSiteParams' datasource='WebUsers' >
+    SELECT     
+      ParamName, ParamValue 
+      FROM 
+          PortalParams
+      WHERE
+          ( ParamType = 'Site' )
+  </cfquery>
+</cftransaction>
+
+<cfloop query="getSiteParams" >
+    <cfset "session.#getSiteParams.ParamName#" =  "#getSiteParams.ParamValue#"> 
+</cfloop>
+
 <!---
   getUser
   getWebApps
@@ -114,7 +129,7 @@
         </cftransaction>
         <cfset result = {success: true, message: 'Avatar uploaded successfully'}>
       <cfcatch>
-          <cfmail from="webservices@randwhitney.com" to="webservices@randwhitney.com" subject="error: avatar upload" type="html">
+          <cfmail from="webservices@#session.rootEmailDomain#" to="webservicesteam@#session.rootEmailDomain#" subject="error: avatar upload" type="html">
             <cfdump var="#cfcatch#">
           </cfmail>
         <cfset result = {success: false, message: '#cfcatch.message# .. #cfcatch.errorcode#'}>
