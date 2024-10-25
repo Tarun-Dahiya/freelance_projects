@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { createColumnHelper, Row } from '@tanstack/react-table'
 import CommonTable from '../commonTable/CommonTable'
 import { SampleTableData } from '../../lib/actions'
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from '../floating_ui/Dialog'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../floating_ui/Tooltip'
 
 const SampleTable = ({tableData}:{tableData:SampleTableData[]}) => {
     const [selectedRows, setSelectedRows] = useState<SampleTableData[]>([])
@@ -101,10 +103,27 @@ const SampleTable = ({tableData}:{tableData:SampleTableData[]}) => {
                 const firstName = props.row.original.firstName
                 const lastName = props.row.original.lastName
                 return (
-                    <button onClick={() => alert(`${firstName} ${lastName}`)} className='hidden md:flex btn btn-sm btn-outline btn-warning gap-2'>
-                        <i className="ki-outline ki-message-text-2" />
-                        Alert
-                    </button>
+                    <Dialog>
+                        <DialogTrigger>
+                            <button className='hidden md:flex btn btn-sm btn-outline btn-warning gap-2'>
+                                <i className="ki-outline ki-message-text-2" />
+                                Alert
+                            </button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <div className="card min-w-[700px]">
+                                <div className="card-header">
+                                    <h1 className="text-xl">Dialog/Modal</h1>
+                                </div>
+                                <div className="card-body flex flex-col">
+                                    <p>{`${firstName} ${lastName}`}</p>
+                                    <DialogClose>
+                                        <button className='btn btn-sm btn-outline btn-danger float-right'>Close</button>
+                                    </DialogClose>
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 )
             },
             header: () => <span className='hidden md:inline-block'>Actions</span>,
@@ -123,7 +142,19 @@ const SampleTable = ({tableData}:{tableData:SampleTableData[]}) => {
     return (
         <div className='card w-full mt-4'>
             <div className='card-header min-h-16'>
-                <h1 className='text-xl'>Sample Table</h1>
+                <div className='flex items-center gap-2'>
+                    <h1 className='text-xl'>Sample Table</h1>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <i className="ki-outline ki-information text-primary text-xl" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <div className='p-2 bg-gray-800 rounded-lg'>
+                                <p className='text-md text-gray-100'>This is a sample table with some sample data</p>
+                            </div>
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
                 {selectedData.length
                     ? <button className='btn btn-md btn-outline btn-info flex gap-2 items-center' onClick={() => alert(JSON.stringify(selectedData))}>
                         <i className="ki-outline ki-check-squared"></i>

@@ -1,15 +1,38 @@
 <cfcomponent>
 <!--- include webservices wide security functions --->
   <cfinclude template='/webservices/auth/apiFiles/Security/objectSecurity.cfc'>
+  <cfinclude template='/webservices/auth/apiFiles/Security/CSRF.cfc'>
 
 <!--- include app level utility functions --->
   <cfinclude template='./system/functions.cfc'>
 
+<cftransaction isolation='read_uncommitted' >
+  <cfquery name='getSiteParams' datasource='WebUsers' >
+    SELECT     
+      ParamName, ParamValue 
+      FROM 
+          PortalParams
+      WHERE
+          ( ParamType = 'Site' )
+  </cfquery>
+</cftransaction>
+
+<cfloop query="getSiteParams" >
+    <cfset "session.#getSiteParams.ParamName#" =  "#getSiteParams.ParamValue#"> 
+</cfloop>
+
 <!---
   getUser
+  getWebApps
+  uploadAvatar
 --->
 
   <cffunction name="getUser" access="remote" output="yes">
+    <cfset headers = getHTTPRequestData().headers>
+    <cfif not checkCSRF(headers.authorization)>
+      <cfoutput>#serializeJSON({ invalidToken: true }, "struct")#</cfoutput>
+      <cfabort>
+    </cfif>
     <cftransaction isolation="read_uncommitted">
       <cfquery name="getUser" datasource="webUsers">
           SELECT
@@ -39,6 +62,11 @@
   </cffunction>
 
   <cffunction name="getWebApps" access="remote" output="yes">
+    <cfset headers = getHTTPRequestData().headers>
+    <cfif not checkCSRF(headers.authorization)>
+      <cfoutput>#serializeJSON({ invalidToken: true }, "struct")#</cfoutput>
+      <cfabort>
+    </cfif>
     <cftry>
     <cfquery name="getWebApps" datasource="WebUsers" >
         SELECT
@@ -66,6 +94,11 @@
 
 
   <cffunction name="uploadAvatar" access="remote" output="yes">
+    <cfset headers = getHTTPRequestData().headers>
+    <cfif not checkCSRF(headers.authorization)>
+      <cfoutput>#serializeJSON({ invalidToken: true }, "struct")#</cfoutput>
+      <cfabort>
+    </cfif>
     <cfset userId = FORM.userId>
     <cfset image = FORM.file>
     <cfif isDefined("FORM.file")>
@@ -82,7 +115,12 @@
         <cfset fileURL = '#fileRootDomain#/all_images/people/#getUser.username#.jpg' >
         <cftransaction>
           <cfset image = imageReadBase64(form.image)>
-          <cfimage source="#image#" destination="#filePath#" action="write" overwrite="yes">
+          <cffile 
+    	      action="upload" 
+            filefield="file" 
+            destination="D:\inetpub\wwwroot\all_images\people\"
+            nameconflict="overwrite"
+          >
         </cftransaction>
         <cftransaction>        
           <cfquery name="updateImg" datasource='WebUsers' >
@@ -91,8 +129,8 @@
         </cftransaction>
         <cfset result = {success: true, message: 'Avatar uploaded successfully'}>
       <cfcatch>
-          <cfmail from="webservices@randwhitney.com" to="skeane@randwhitney.com" subject="error: avatar upload">
-            <cfoutput>#cfcatch.message# .. #cfcatch.errorcode#</cfoutput>
+          <cfmail from="webservices@#session.rootEmailDomain#" to="webservicesteam@#session.rootEmailDomain#" subject="error: avatar upload" type="html">
+            <cfdump var="#cfcatch#">
           </cfmail>
         <cfset result = {success: false, message: '#cfcatch.message# .. #cfcatch.errorcode#'}>
       </cfcatch>
@@ -102,85 +140,5 @@
     </cfif>
     <cfoutput>#serializeJSON(result, "struct")#</cfoutput>
   </cffunction>
-    <!---
-    
-      <cftry>
-        <cfset fileRootDomain = '#session.rootHttpsDomain#' >
-        <cfset fileRootSitePath = '#session.rootSitePath#' >
-        <cftransaction isolation='read_uncommitted' >
-          <cfquery name='getUser' datasource='WebUsers' >
-              SELECT * FROM Users WHERE ( User_ID = '#userId#' )
-          </cfquery>
-        </cftransaction> 
-        <cfset filePath = '#fileRootSitePath#\all_images\people\#getUser.username#.jpg' >
-        <cfset fileURL = '#fileRootDomain#/all_images/people/#getUser.username#.jpg' >
-        <cftransaction>
-          <cfset image = imageReadBase64(form.image)>
-          <cfimage source="#form.image#" destination="#filePath#" action="write" overwrite="yes">
-        </cftransaction>
-        <cftransaction>        
-          <cfquery name="updateImg" datasource='WebUsers' >
-            UPDATE Users SET Avatar = '#fileURL#' WHERE ( User_ID = #userId# )
-          </cfquery>
-        </cftransaction>
-        <cfset result = {success: true, message: 'Avatar uploaded successfully'}>
-        <cfcatch>
-          <cfmail from="webservices@randwhitney.com" to="skeane@randwhitney.com" subject="error: avatar upload">
-            <cfoutput>#cfcatch.message# .. #cfcatch.errorcode#</cfoutput>
-          </cfmail>
-          <cfset result = {success: false, message: '#cfcatch.message# .. #cfcatch.errorcode#'}>
-        </cfcatch>
-      </cftry>
-      <cfoutput>#serializeJSON(result, "struct")#</cfoutput>
-    </cfelse>
-      <cfset result = {success: false, message: 'No File Selected'}>
-      <cfoutput>#serializeJSON(result, "struct")#</cfoutput>
-    </cfif>
-    --->
-
-  <!---
-
-<cfset error = 'Success' >
-<cfif isDefined("FORM.image") >
-<cftry>
-    <cfset fileURL =  '' >
-      <cfset fileRootDomain = '#session.rootHttpsDomain#' >
-      <cfset fileRootSitePath = '#session.rootSitePath#' >
-    <cfif session.division eq 'RWG' >
-      <!--- temp until all images are pushed to new portal --->
-        <cfset fileRootDomain = 'https://randwhitney.com' >
-        <cfset fileRootSitePath = 'D:\inetpub\wwwroot' >
-    </cfif>       
-    <!--- <cfdump var="#form#" ></cfdump> ---> 
-    <cftransaction isolation='read_uncommitted' >
-      <cfquery name='getUser' datasource='WebUsers' >
-          SELECT * FROM Users WHERE ( User_ID = '#form.User_ID#' )
-      </cfquery>
-    </cftransaction> 
-    <cfset filePath = '#fileRootSitePath#\all_images\people\#getUser.username#.jpg' >
-    <cfset fileURL = '#fileRootDomain#/all_images/people/#getUser.username#.jpg' >
-    <cftransaction>
-      <cfset image = imageReadBase64(form.image)>
-      <cfimage source="#image#" destination="#filePath#" action="write" overwrite="yes">
-    </cftransaction>
-
-    <cftransaction>        
-      <cfquery name="updateImg" datasource='WebUsers' >
-         UPDATE Users SET Avatar = '#fileURL#' WHERE ( User_ID = #FORM.user_id# )
-      </cfquery>
-    </cftransaction>
-<cfcatch type="any">
-<cfset error = '#cfcatch.Message# .. #cfcatch.Detail#'>
-<cfmail from="dfafard@randwhitney.com" to="dfafard@randwhitney.com" 
-subject=" Upload Logo File Error:">#cfcatch.Message# .. #cfcatch.Detail#</cfmail>
-</cfcatch>
-</cftry>
-<cfelse>
-<cfset error = 'No File Selected'>
-<cfmail from="dfafard@randwhitney.com" to="dfafard@randwhitney.com" subject=" Upload Logo File Error:">form file is not defined
-</cfmail>
-</cfif><cfoutput>#error#</cfoutput>
-
-  --->
 
 </cfcomponent>

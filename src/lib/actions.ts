@@ -42,7 +42,11 @@ export const getUser = async (): Promise<User> => {
         return sampleUser;
     }
     try {
-        const response = await axios.get(`/webservices/metronic9/api/common.cfc?method=getUser`);
+        const response = await axios.post(`/webservices/metronic9/api/common.cfc?method=getUser`, {
+            headers: {
+                Authorization: `${localStorage.getItem('token')}`
+            }
+        });
         return response.data[0];
     } catch (err) {
         console.error(err)
@@ -59,7 +63,11 @@ export type AppList = {
 
 export const getWebApps = async (): Promise<AppList[]> => {
     try {
-        const response = await axios.get(`/webservices/metronic9/api/common.cfc?method=getWebApps`);
+        const response = await axios.post(`/webservices/metronic9/api/common.cfc?method=getWebApps`, {
+            headers: {
+                Authorization: `${localStorage.getItem('token')}`
+            }
+        });
         if (response.data.SUCCESS) {
             return response.data.PAYLOAD;
         }
