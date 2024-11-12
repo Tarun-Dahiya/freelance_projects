@@ -17,6 +17,6 @@ export default defineConfig({
       },
     },
   },
-  base: '/webservices/metronic9/',
+  base: '/webservices/assetScheduling2/',
 },
 )

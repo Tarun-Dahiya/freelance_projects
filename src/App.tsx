@@ -18,12 +18,13 @@ export default function App() {
       getUser()
     }
     KTComponent.init()
-    document.title = 'Metronic Starter'
+    document.title = 'Asset Scheduling'
   }, [])
 
   useEffect(() => {
     if (data) {
       setUser(data[0])
+      sessionStorage.setItem('user', JSON.stringify(data[0]))
       const internal = data[0].USERLOCALE.toLowerCase() === 'internal'
       if (!internal) { window.location.href = `${baseURL}/Webservices/auth/login` }
       localStorage.removeItem('datatable_1')
@@ -36,7 +37,7 @@ export default function App() {
         userData: user
       }
     }>
-      <div className="flex flex-col h-screen w-screen bg-gray-300 text-gray-950 dark:text-gray-50">
+      <div className="flex flex-col min-h-screen w-screen bg-gray-300 text-gray-950 dark:text-gray-50">
         <Navbar />
         <div className="h-screen flex flex-col">
           <div className='m-2 md:mx-4'>
