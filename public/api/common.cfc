@@ -7,6 +7,7 @@
   <cfinclude template='./system/functions.cfc'>
 
 <cftransaction isolation='read_uncommitted' >
+
   <cfquery name='getSiteParams' datasource='WebUsers' >
     SELECT     
       ParamName, ParamValue 
