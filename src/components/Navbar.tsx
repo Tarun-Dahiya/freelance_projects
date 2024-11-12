@@ -82,14 +82,14 @@ const Navbar = () => {
                             <li className="bg-white text-black flex items-center ps-5 pe-9 cursor-pointer hover:text-blue-400">
                                 <Link to='/'>
                                     <FontAwesomeIcon icon={faGlobe} size='xl' className='text-sky-500 pe-2' />
-                                    <span>App Name</span>
+                                    <span>Asset Scheduling</span>
                                 </Link>
                             </li>
-                            <li className="text-white flex items-center ps-4 cursor-pointer hover:text-blue-300 ">
-                                <PrimaryLinkContent title={'Menu-1'} offset={menuOffset} />
-                            </li>
+                            {/* <li className="text-white flex items-center ps-4 cursor-pointer hover:text-blue-300 ">
+                                <PrimaryLinkContent title={'Menu'} offset={menuOffset} />
+                            </li> */}
                             <li className="text-white flex items-center cursor-pointer hover:text-blue-300 ">
-                                <SecondaryLinkContent title={'Menu-2'} offset={menuOffset} />
+                                <SecondaryLinkContent title={'Menu'} offset={menuOffset} />
                             </li>
                         </ul>
                     </div>
