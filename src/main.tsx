@@ -7,6 +7,8 @@ import StartPage from './components/startPage/StartPage.tsx';
 import NotFoundPage from './components/notFoundPage/NotFoundPage.tsx';
 import SavedSearchPage from './components/savedSearchPage/SavedSearchPage.tsx'
 import ReportsPage from './components/reportsPage/ReportsPage.tsx'
+import AddEvent from './components/AddEvent.tsx'
+import EditAsset from './components/EditAsset.tsx'
 
 const router = createBrowserRouter(
   [
@@ -27,11 +29,19 @@ const router = createBrowserRouter(
           path: "/reports",
           element: <ReportsPage />,
         },
+        {
+          path: "/addEvent",
+          element: <AddEvent />,
+        },
+        {
+          path: "/editAsset",
+          element: <EditAsset />,
+        },
       ],
     },
   ],
   {
-    basename: "/webservices/metronic9",
+    basename: "/webservices/assetScheduling2",
   }
 );
 

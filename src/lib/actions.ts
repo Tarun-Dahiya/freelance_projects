@@ -42,7 +42,7 @@ export const getUser = async (): Promise<User> => {
         return sampleUser;
     }
     try {
-        const response = await axios.post(`/webservices/metronic9/api/common.cfc?method=getUser`, {
+        const response = await axios.post(`/webservices/assetScheduling2/api/common.cfc?method=getUser`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             }
@@ -63,7 +63,7 @@ export type AppList = {
 
 export const getWebApps = async (): Promise<AppList[]> => {
     try {
-        const response = await axios.post(`/webservices/metronic9/api/common.cfc?method=getWebApps`, {
+        const response = await axios.post(`/webservices/assetScheduling2/api/common.cfc?method=getWebApps`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             }
@@ -75,4 +75,59 @@ export const getWebApps = async (): Promise<AppList[]> => {
         console.error(error);
     }
     return (process.env.NODE_ENV === 'development') ? sampleAppList : []    
+}
+
+export type Event = {
+    eventid : number
+    who: string
+    attendees: string
+    location: string
+    startdate: boolean
+    enddate: boolean
+    eventnote: string
+    assetid: number
+    assetname: string
+    assettype: string
+    HomeFacility: string
+}
+
+export const getEvents = async (): Promise<Event[]> => {
+    try {
+        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getEvents`, {
+            headers: {
+                Authorization: `${localStorage.getItem('token')}`
+            }
+        });
+        if (response.data.SUCCESS) {
+            return response.data[0];
+        }
+    } catch (error) {
+        console.error(error);
+    }
+    return []
+}
+
+export type AssetMember = {
+    ASSETNAME: string
+    ASSETID: number
+    ASSETTYPE: string
+    HOMEFACILITY: string
+    STATUS: string
+}
+
+export const getAssetMembers = async (): Promise<AssetMember[]> => {
+    try {
+        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getAssetMembers`, {
+            headers: {
+                Authorization: `${localStorage.getItem('token')}`
+            }
+        });
+        // if (response.data.SUCCESS) {
+        //     return response.data[0];
+        // }
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+    return []
 }
