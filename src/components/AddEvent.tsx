@@ -20,6 +20,7 @@ const AddEvent: FC = () => {
     const [notes, setNotes] = useState<string>("")
     const [warning, setWarning] = useState<boolean>(false)
     const [assetMembers, setAssetMembers] = useState<AssetMember[]>([])
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
 
     type OptionType = { value: string; label: string };
 
@@ -39,8 +40,8 @@ const AddEvent: FC = () => {
             }
         }
 
-        setStartTime('8:00 AM')
-        setEndTime('5:00 PM')
+        setStartTime('8:00')
+        setEndTime('17:00')
 
         console.log(`Now calling getAssetMembers`)
 
@@ -75,7 +76,7 @@ const AddEvent: FC = () => {
     const timeSlots = generateTimeSlots()
     
 
-    const submit = () => {
+    const submit = async () => {
         if (userName === "" && location === "" && numPeople === "" && notes === "") {
             setWarning(true)
             toast(<div className='d-flex flex-column'>
@@ -85,14 +86,35 @@ const AddEvent: FC = () => {
                 {type: 'warning'}
             )
         } else {
-            // Add your submit logic here
-            setWarning(true)
-            toast(<div className='d-flex flex-column'>
-                <h3>Success</h3>
-                <label>Event Saved</label>
-            </div>, 
-            {type: 'success'}
-        )
+            const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=saveEvent`, {
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`
+                },
+                data: {
+                    startDate: startDate,
+                    endDate: endDate,
+                    startTime: startTime,
+                    endTime: endTime,
+                    assetid: room?.value,
+                    eventid: '',
+                    who: userName,
+                    where: location,
+                    attendees: numPeople,
+                    eventNotes: notes
+                }
+            })
+
+            const status = await response.status
+            if(status === 200) {
+                setWarning(true)
+                toast(<div className='d-flex flex-column'>
+                        <h3>Success</h3>
+                        <label>Event Saved</label>
+                    </div>, 
+                    {type: 'success'}
+                )
+                
+            }
         }
     }
 
@@ -125,42 +147,27 @@ const AddEvent: FC = () => {
                 const status = await response.status
                 const startTimeElement = document.getElementById('startTime')
                 const endTimeElement = document.getElementById('endTime')
-                const saveEventButton = document.getElementById('saveEvent')
-                const startDateElement = document.getElementById('startDate')
-                const endDateElement = document.getElementById('endDate')
 
                 if(status === 200) {
                     if(startTimeElement) {
                         startTimeElement.style.backgroundColor = 'green'
+                        // startTimeElement.style.color = 'white'
                     }
                     if(endTimeElement) {
                         endTimeElement.style.backgroundColor = 'green'
+                        // endTimeElement.style.color = 'white'
                     }
-                    if(startDateElement) {
-                        startDateElement.style.backgroundColor = 'white'
-                    }
-                    if(endDateElement) {
-                        endDateElement.style.backgroundColor = 'white'
-                    }
-                    if(saveEventButton) {
-                        saveEventButton.removeAttribute('disabled')
-                    }
+                    setIsButtonDisabled(false)
                 } else {
                     if(startTimeElement) {
                         startTimeElement.style.backgroundColor = 'red'
+                        // startTimeElement.style.color = 'yellow'
                     }
                     if(endTimeElement) {
                         endTimeElement.style.backgroundColor = 'red'
+                        // endTimeElement.style.color = 'yellow'
                     }
-                    if(startDateElement) {
-                        startDateElement.style.backgroundColor = 'yellow'
-                    }
-                    if(endDateElement) {
-                        endDateElement.style.backgroundColor = 'yellow'
-                    }
-                    if(saveEventButton) {
-                        saveEventButton.setAttribute('disabled', 'true')
-                    }
+                    setIsButtonDisabled(true)
                 }
             } catch (error) {
                 console.error(error)
@@ -209,7 +216,7 @@ const AddEvent: FC = () => {
             />}
             <div className="card">
                 <div className="card-header flex justify-between items-center gap-4 py-8">
-                    <h2 className="text-2xl font-semibold text-gray-900">Add New User</h2>
+                    <h2 className="text-2xl font-semibold text-gray-900">Add New Event</h2>
                 </div>
                 <div className="card-body py-16">
                     <input type='hidden' name='eventid' id='eventid' />
@@ -368,7 +375,7 @@ const AddEvent: FC = () => {
                 <div className="card-footer py-8 flex justify-between">
                     <div>
                         <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex" 
-                        disabled onClick={() => submit()}>
+                        disabled={isButtonDisabled} onClick={() => submit()}>
                             Save Event
                         </button>
                     </div>

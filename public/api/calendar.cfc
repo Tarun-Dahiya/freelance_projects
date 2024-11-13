@@ -134,4 +134,50 @@
     
 </cffunction>
 
+<cffunction  name="saveEvent" access="remote" output="yes">
+
+    <cfargument name="assetid" default="0">
+    <cfargument name="startdate" default="">
+    <cfargument name="starttime" default="">
+    <cfargument name="enddate" default="">
+    <cfargument name="endtime" default="">
+    <cfargument name="eventid" default="">
+    <cfargument name="who" default="">
+    <cfargument name="where" default="">
+    <cfargument name="attendees" default="">
+    <cfargument name="eventNotes" default="">
+
+    <cfif arguments.eventid eq ''>
+        <cfquery datasource="corporate">
+            Insert into Asset_Schedule (assetid,startdate,enddate,who,location,eventnote, attendees)
+            values
+            (
+            '#arguments.assetid#',
+            '#arguments.startdate# #arguments.starttime#',
+            '#arguments.enddate# #arguments.endtime#',
+            '#arguments.who#',
+            '#arguments.where#',
+            '#arguments.eventNotes#',
+            '#arguments.attendees#'
+            )
+        </cfquery>
+    <cfelse>
+    	<cfquery datasource="corporate">
+			Update 
+            	Asset_Schedule 
+			SET
+                assetid = #arguments.assetid#,
+                startdate = '#arguments.startdate# #arguments.starttime#',
+                enddate = '#arguments.enddate# #arguments.endtime#',
+                who = '#arguments.who#',
+                location = '#arguments.where#',
+                eventnote = '#arguments.eventNotes#',
+                attendees = '#arguments.attendees#'
+            where 
+            	eventid = #arguments.eventid#
+        </cfquery>
+    </cfif>
+    <cfoutput>#serializeJSON({success: true}, "struct")#</cfoutput>
+</cffunction>
+
 </cfcomponent>
