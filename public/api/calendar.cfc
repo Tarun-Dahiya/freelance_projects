@@ -83,4 +83,55 @@
     <cfoutput >#serializeJSON(getAssetMembers, "struct")#</cfoutput>
 </cffunction>
 
+<cffunction name="checkAvailability" access="remote" returntype="string">
+    	
+    <cfargument name="assetid" default="0">
+    <cfargument name="startdate" default="">
+    <cfargument name="starttime" default="">
+    <cfargument name="enddate" default="">
+    <cfargument name="endtime" default="">
+    <cfargument name="eventid" default="">
+    
+    
+    <cfset RS = "#arguments.startdate# #arguments.starttime#">
+    <cfset RE = "#arguments.enddate# #arguments.endtime#">
+    
+    <cfquery datasource="Corporate" name="c">
+        Select 
+            Asset_Schedule.eventid
+        from 
+            Asset_Schedule 
+        where
+            assetid = #arguments.assetid#
+            AND
+            <cfif arguments.eventid neq "">
+            eventid <> #arguments.eventid#
+            AND
+            </cfif>
+            (
+            (startdate BETWEEN '#RS#' AND '#RE#')
+            OR
+            (enddate BETWEEN '#RS#' AND '#RE#')
+            OR
+            (startdate <= '#RS#' AND enddate >= '#RE#')
+            OR
+            (startdate >= '#RS#' AND enddate <= '#RE#')
+            )
+    </cfquery>
+    
+    <cfif c.recordcount gt 0>
+        <cfset returnme =  "Conflict with an existing event">
+    <cfelse>
+        <cfset returnme = "Available">
+    </cfif>
+    
+    <cfif rs gt re>
+        <cfset returnme = "Start Date can not be after the end date">
+    </cfif>
+    
+    
+    <cfreturn returnme>
+    
+</cffunction>
+
 </cfcomponent>

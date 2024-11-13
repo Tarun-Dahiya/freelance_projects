@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react'
 import DatePicker from "react-datepicker"
 import Select from 'react-select'
+import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import { AssetMember, getAssetMembers } from '../lib/actions.ts'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -38,8 +39,8 @@ const AddEvent: FC = () => {
             }
         }
 
-        setStartTime("8:00 AM")
-        setEndTime("5:00 PM")
+        setStartTime('8:00 AM')
+        setEndTime('5:00 PM')
 
         console.log(`Now calling getAssetMembers`)
 
@@ -61,11 +62,12 @@ const AddEvent: FC = () => {
         startTime.setHours(0, 0, 0, 0); // Start at 12:00 AM
     
         for (let i = 0; i < 24 * 4; i++) {  // 24 hours, with 4 intervals (15 mins each)
-          const time = new Date(startTime.getTime() + i * 15 * 60 * 1000); // Add 15 minutes
-          const hours = time.getHours();
-          const minutes = time.getMinutes();
-          const formattedTime = `${hours % 12 === 0 ? 12 : hours % 12}:${minutes < 10 ? '0' + minutes : minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
-          slots.push(formattedTime);
+            const time = new Date(startTime.getTime() + i * 15 * 60 * 1000); // Add 15 minutes
+            const hours = time.getHours();
+            const minutes = time.getMinutes();
+            //   const formattedTime = `${hours % 12 === 0 ? 12 : hours % 12}:${minutes < 10 ? '0' + minutes : minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
+            const unformattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+            slots.push(unformattedTime);
         }
         return slots;
     };
@@ -101,9 +103,69 @@ const AddEvent: FC = () => {
         }
     }
 
-    const checkAvail = (selected: OptionType) => {
+    const checkAvail = async (selected: OptionType) => {
         if(startDate && endDate && startTime && endTime && selected) {
             console.log(`Checking availability for room ${selected.label} from ${startDate} ${startTime} to ${endDate} ${endTime}`)
+
+            try{
+                const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=checkAvailability`, {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`
+                    },
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate,
+                        startTime: startTime,
+                        endTime: endTime,
+                        assetid: selected.value,
+                        eventid: ''
+                    }
+                })
+                
+                const status = await response.status
+                const startTimeElement = document.getElementById('startTime')
+                const endTimeElement = document.getElementById('endTime')
+                const saveEventButton = document.getElementById('saveEvent')
+                const startDateElement = document.getElementById('startDate')
+                const endDateElement = document.getElementById('endDate')
+
+                if(status === 200) {
+                    if(startTimeElement) {
+                        startTimeElement.style.backgroundColor = 'green'
+                    }
+                    if(endTimeElement) {
+                        endTimeElement.style.backgroundColor = 'green'
+                    }
+                    if(startDateElement) {
+                        startDateElement.style.backgroundColor = 'white'
+                    }
+                    if(endDateElement) {
+                        endDateElement.style.backgroundColor = 'white'
+                    }
+                    if(saveEventButton) {
+                        saveEventButton.removeAttribute('disabled')
+                    }
+                } else {
+                    if(startTimeElement) {
+                        startTimeElement.style.backgroundColor = 'red'
+                    }
+                    if(endTimeElement) {
+                        endTimeElement.style.backgroundColor = 'red'
+                    }
+                    if(startDateElement) {
+                        startDateElement.style.backgroundColor = 'yellow'
+                    }
+                    if(endDateElement) {
+                        endDateElement.style.backgroundColor = 'yellow'
+                    }
+                    if(saveEventButton) {
+                        saveEventButton.setAttribute('disabled', 'true')
+                    }
+                }
+            } catch (error) {
+                console.error(error)
+            }
+            
         }
     }
 
@@ -118,14 +180,14 @@ const AddEvent: FC = () => {
     const handleEndTimeChange = (time: OptionType | null) => {
         if (time) {
             setEndTime(time.value)
-            console.log('Selected option:', time)
+            console.log('Selected option:', time.value)
         }
     }
 
     const handleStartTimeChange = (time: OptionType | null) => {
         if (time) {
             setStartTime(time.value)
-            console.log('Selected option:', time)
+            console.log('Selected option:', time.value)
         }
     }
 
@@ -161,6 +223,7 @@ const AddEvent: FC = () => {
                                     </span>
                                 </label>
                                 <DatePicker
+                                    id='startDate'
                                     selected={startDate} 
                                     onChange={handleStartDateChange}
                                     dateFormat="MM/dd/yyyy"
@@ -180,6 +243,7 @@ const AddEvent: FC = () => {
                                     </span>
                                 </label>
                                 <Select<OptionType>
+                                    id='startTime'
                                     classNames={{ 
                                         control: () => 'dark:bg-light-active dark:border-black',
                                         menu: () => 'dark:bg-light-active dark:border-black',
@@ -203,6 +267,7 @@ const AddEvent: FC = () => {
                                     </span>
                                 </label>
                                 <DatePicker
+                                    id='endDate'
                                     selected={endDate} 
                                     onChange={handleEndDateChange} 
                                     dateFormat="MM/dd/yyyy"
@@ -222,6 +287,7 @@ const AddEvent: FC = () => {
                                     </span>
                                 </label>
                                 <Select<OptionType>
+                                    id='endTime'
                                     classNames={{ 
                                         control: () => 'dark:bg-light-active dark:border-black',
                                         menu: () => 'dark:bg-light-active dark:border-black',
@@ -301,7 +367,8 @@ const AddEvent: FC = () => {
                 </div>
                 <div className="card-footer py-8 flex justify-between">
                     <div>
-                        <button className="btn btn-primary stepper-last:inline-flex" onClick={() => submit()}>
+                        <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex" 
+                        disabled onClick={() => submit()}>
                             Save Event
                         </button>
                     </div>
