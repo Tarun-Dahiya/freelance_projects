@@ -292,11 +292,6 @@
 </cffunction>
 
 <cffunction name="UpdateVal" access="remote" output="yes">
-<!---     <cfargument name="assetid" default="0"> --->
-<!---     <cfargument name="tablename" default="none"> --->
-<!---     <cfargument name="col" default="none"> --->
-<!---     <cfargument name="valtype" default="text"> --->
-<!---     <cfargument name="value" default="0"> --->
 
     <cfset assetid = '0'>
     <cfset tablename = 'none'>
@@ -331,6 +326,24 @@
     
     <cfreturn col>
     
+</cffunction>
+
+<cffunction name="insertNewAsset" access="remote" output="yes">
+
+    <cfset assetname = ''>
+
+    <cfif isDefined('params.data')>
+        <cfset assetname = params.data.assetname>
+    </cfif>
+
+    <cfquery datasource="corporate">
+        Insert into Asset_Members (assetname)
+        values
+        (
+        '#assetname#'
+        )
+    </cfquery>
+    <cfreturn 'New Asset'>
 </cffunction>
 
 </cfcomponent>

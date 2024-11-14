@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from "react"
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "./floating_ui/Dialog"
+import { FC, useEffect, useState, useRef } from "react"
+import { Dialog, DialogClose, DialogContent } from "./floating_ui/Dialog"
 import Select from 'react-select'
 import axios from 'axios'
 
@@ -12,6 +12,8 @@ interface AddAssetDialogProps {
       ASSETID: number;
       [key: string]: any; 
     } | null;
+    newID: number;
+    onClose: () => void;
 }
 
 interface OptionType {
@@ -19,7 +21,7 @@ interface OptionType {
     label: string | undefined;
 }
 
-const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
+const AddAssetDialog: FC<AddAssetDialogProps> = ({ room, newID, onClose }) => {
     const [name, setName] = useState<string>()
     const [type, setType] = useState<string>()
     const [facility, setFacility] = useState<string>()
@@ -28,8 +30,48 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
     const [bgColor, setBgColor] = useState<string>()
     const [textColor, setTextColor] = useState<string>()
 
+    const dialogRef = useRef<HTMLDivElement>(null)
+
     useEffect(() => {
-        if (room) {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+                onClose()
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
+
+
+    useEffect(() => {
+        if(newID > 0 && room === null){
+
+            const insertNewAsset = async () => {
+                const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=insertNewAsset`, {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`
+                    },
+                    data: {
+                        assetname: 'New Asset'
+                    }
+                })
+    
+                const data = await response.data
+                if(data.status === 200){
+                    console.log('New Asset added successfully')
+                }
+            }
+    
+            insertNewAsset()
+        }
+    },[newID, room])
+
+    useEffect(() => {
+        if (room !== null) {
             setName(room.ASSETNAME)
             setType(room.ASSETTYPE)
             setFacility(room.HOMEFACILITY)
@@ -48,7 +90,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
                 Authorization: `${localStorage.getItem('token')}`
             },
             data: {
-                assetid: assetid,
+                assetid: (newID > 0 && room === null) ? newID : assetid,
                 tableName: 'Asset_Members',
                 col: 'ASSETNAME',
                 valType: 'text',
@@ -69,7 +111,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
                 Authorization: `${localStorage.getItem('token')}`
             },
             data: {
-                assetid: assetid,
+                assetid: (newID > 0 && room === null) ? newID : assetid,
                 tableName: 'Asset_Members',
                 col: 'ASSETTYPE',
                 valType: 'text',
@@ -79,7 +121,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
 
         const data = response.data
         if(data.includes('ASSETTYPE')){
-            alert('Asset Type already exists')
+            alert('Asset Type updated successfully')
         }
     }
 
@@ -90,7 +132,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
                 Authorization: `${localStorage.getItem('token')}`
             },
             data: {
-                assetid: assetid,
+                assetid: (newID > 0 && room === null) ? newID : assetid,
                 tableName: 'Asset_Members',
                 col: 'HOMEFACILITY',
                 valType: 'text',
@@ -113,7 +155,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
                 Authorization: `${localStorage.getItem('token')}`
             },
             data: {
-                assetid: assetid,
+                assetid: (newID > 0 && room === null) ? newID : assetid,
                 tableName: 'Asset_Members',
                 col: 'STATUS',
                 valType: 'text',
@@ -123,23 +165,13 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
 
         const data = response.data
         if(data.includes('STATUS')){
-            alert('Status already exists')
+            alert('Status updated successfully')
         }
     }
 
     return (
-        <Dialog>
-            <DialogTrigger>
-                {room ?
-                (<button className="btn btn-md btn-warning flex gap-2 items-center">
-                    Edit
-                </button>) :
-                (<button className="btn btn-md btn-primary flex gap-2 items-center">
-                    <i className="ki-outline ki-plus text-sm"></i>
-                    Add Asset
-                </button>)}
-            </DialogTrigger>
-            <DialogContent>
+        <Dialog open={true}>
+            <DialogContent ref={dialogRef}>
                 <div className="card w-[700px]">
                     <div className="card-body p-5">
                         <div className="flex flex-col gap-5 w-[80%] ml-auto mr-auto">
@@ -233,16 +265,8 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room }) => {
                         </div>
                         <div className="flex justify-end gap-2 mt-5">
                             <DialogClose>
-                                <button className="btn btn-secondary">Cancel</button>
+                                <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
                             </DialogClose>
-                            {/* <DialogClose>
-                                <button 
-                                    className="btn btn-primary" 
-                                    onClick={() => addAssets()}
-                                >
-                                    Save
-                                </button>
-                            </DialogClose> */}
                         </div>
                     </div>
                 </div>

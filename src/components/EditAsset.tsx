@@ -14,11 +14,17 @@ interface Props {
 const EditAsset: FC = () => {
 
     const [assetMembers, setAssetMembers] = useState<AssetMember[]>([])
+    const [nextAssetID, setNextAssetID] = useState<number>(0)
+    const [showDialog, setShowDialog] = useState<boolean>(false) 
+    const [selectedRoom, setSelectedRoom] = useState<AssetMember | null>(null); 
 
     useEffect(() => {
         const fetchAssetMembers = async () => {
             const data: AssetMember[] = await getAssetMembers()
             setAssetMembers(data)
+
+            const maxAssetID = Math.max(...data.map(asset => asset.ASSETID), 0)
+            setNextAssetID(maxAssetID + 1)
         }
         fetchAssetMembers()
     },[])
@@ -37,6 +43,18 @@ const EditAsset: FC = () => {
     // Group rooms by facility
     const groupedAssetMembers = groupAssetsByFacility(assetMembers)
 
+    const handleNewAssetClick = () => {
+        console.log(`Selected Room ${null}`)
+        setSelectedRoom(null)
+        setShowDialog(true)
+    }
+
+    const handleExistingAssetClick = (room: AssetMember) => {
+        console.log(`Selected Room ${room}`)
+        setSelectedRoom(room)
+        setShowDialog(true)
+    }
+
     return (
         <div className="max-w-full lg:max-w-[95%] xl:max-w-[90%] 2xl:max-w-[85%] ml-auto mr-auto" 
             data-stepper="false" id="addEvent"
@@ -53,7 +71,12 @@ const EditAsset: FC = () => {
                                 <label className="text-md">
                                     Rand Whitney Assets
                                 </label>
-                                <AddAssetDialog room={null}/>
+                                {/* <AddAssetDialog room={null} newID={nextAssetID}/> */}
+                                <button className="btn btn-md btn-primary flex gap-2 items-center"
+                                onClick={handleNewAssetClick}>
+                                    <i className="ki-outline ki-plus text-sm"></i>
+                                    Add Asset
+                                </button>
                             </div>
                         </div> 
                         {Object.keys(groupedAssetMembers).map((facility) => (
@@ -85,7 +108,11 @@ const EditAsset: FC = () => {
                                         <td className="text-sm">{room.ASSETNAME}</td>
                                         <td className="text-sm">{room.ASSETTYPE}</td>
                                         <td className="text-md">
-                                            <AddAssetDialog room={room} />
+                                            {/* <AddAssetDialog room={room} newID={0}/> */}
+                                            <button className="btn btn-md btn-warning flex gap-2 items-center"
+                                            onClick={() => handleExistingAssetClick(room)}>
+                                                Edit
+                                            </button>
                                         </td>
                                         </tr>
                                     ))}
@@ -97,6 +124,13 @@ const EditAsset: FC = () => {
                     </div>
                 </div>
             </div>
+            {showDialog && (
+                <AddAssetDialog
+                    room={selectedRoom}
+                    newID={nextAssetID}
+                    onClose={() => setShowDialog(false)}
+                />
+            )}
         </div>
     )
 
