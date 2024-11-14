@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { AssetMember, getAssetMembers } from '../lib/actions.ts'
 import AddAssetDialog from './AddAssetDialog.tsx'
 
@@ -56,34 +56,44 @@ const EditAsset: FC = () => {
                                 <AddAssetDialog room={null}/>
                             </div>
                         </div> 
-                        {Object.keys(groupedAssetMembers).map(facility => (
-                            <table className="table-auto w-1/2">
+                        {Object.keys(groupedAssetMembers).map((facility) => (
+                            <table key={facility} className="table-auto w-1/2 mb-6">
                                 <thead>
-                                    <tr className='text-md h-8 bg-gray-500'>
-                                        <th colSpan={3}>{facility}</th>
-                                    </tr>
-                                    <tr className='text-md h-8 bg-blue-500 text-white'>
+                                <tr className="text-md h-8 bg-gray-500">
+                                    <th colSpan={3}>{facility}</th>
+                                </tr>
+
+                                {/* Loop through each unique ASSETTYPE in the facility */}
+                                {Object.values(
+                                    groupedAssetMembers[facility].reduce((acc: Record<string, AssetMember[]>, room: AssetMember) => {
+                                    if (!acc[room.ASSETTYPE]) {
+                                        acc[room.ASSETTYPE] = [];
+                                    }
+                                    acc[room.ASSETTYPE].push(room);
+                                    return acc;
+                                    }, {})
+                                ).map((roomsByType: AssetMember[], idx: number) => (
+                                    <React.Fragment key={idx}>
+                                    <tr className="text-md h-8 bg-blue-500 text-white">
                                         <th colSpan={3}>
-                                            {assetMembers[0].ASSETTYPE}
+                                        {roomsByType[0].ASSETTYPE}
                                         </th>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {groupedAssetMembers[facility].map(room => (
-                                        <>
-                                        <tr className='h-8'>
-                                            <td className='text-md'>{room.ASSETNAME}</td>
-                                            <td className='text-md'>{room.ASSETTYPE}</td>
-                                            <td className='text-md'>
-                                                <AddAssetDialog room={room}/>
-                                            </td>
+
+                                    {roomsByType.map((room) => (
+                                        <tr key={room.ASSETID} className="h-8">
+                                        <td className="text-sm">{room.ASSETNAME}</td>
+                                        <td className="text-sm">{room.ASSETTYPE}</td>
+                                        <td className="text-md">
+                                            <AddAssetDialog room={room} />
+                                        </td>
                                         </tr>
-                                        </>
                                     ))}
-                                </tbody>
+                                    </React.Fragment>
+                                ))}
+                                </thead>
                             </table>
-                            
-                        ))}
+                            ))}
                     </div>
                 </div>
             </div>

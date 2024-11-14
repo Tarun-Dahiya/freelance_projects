@@ -291,4 +291,46 @@
 
 </cffunction>
 
+<cffunction name="UpdateVal" access="remote" output="yes">
+<!---     <cfargument name="assetid" default="0"> --->
+<!---     <cfargument name="tablename" default="none"> --->
+<!---     <cfargument name="col" default="none"> --->
+<!---     <cfargument name="valtype" default="text"> --->
+<!---     <cfargument name="value" default="0"> --->
+
+    <cfset assetid = '0'>
+    <cfset tablename = 'none'>
+    <cfset col = 'none'>
+    <cfset valtype = 'text'>
+    <cfset value = '0'>
+
+    <cfif isDefined('params.data')>
+        <cfset assetid = params.data.assetid>
+        <cfset tablename = params.data.tablename>
+        <cfset col = params.data.col>
+        <cfset valtype = params.data.valtype>
+        <cfset value = params.data.value>
+    </cfif>
+    
+    <cfquery datasource="corporate">
+        Update 
+            #tablename# 
+        set 
+            #col# = 
+            <cfif trim(value) neq "">
+                <cfswitch expression="#valtype#">
+                    <cfcase value="text">'#trim(value)#'</cfcase>
+                    <cfcase value="numeric">#value#</cfcase>
+                </cfswitch>
+            <cfelse>
+                NULL
+            </cfif>
+        WHERE
+            assetid = #assetid#
+    </cfquery>
+    
+    <cfreturn col>
+    
+</cffunction>
+
 </cfcomponent>
