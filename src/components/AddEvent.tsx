@@ -2,11 +2,26 @@ import { FC, useState, useEffect } from 'react'
 import DatePicker from "react-datepicker"
 import Select from 'react-select'
 import axios from 'axios'
+import moment from 'moment'
 import { useParams } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify'
 import { AssetMember, getAssetMembers } from '../lib/actions.ts'
 import 'react-datepicker/dist/react-datepicker.css'
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
+
+interface Event {
+    EVENTID : number
+    WHO: string
+    ATTENDEES: string | null
+    LOCATION: string
+    STARTDATE: string
+    ENDDATE: string
+    EVENTNOTE: string
+    ASSETID: number
+    ASSETNAME: string
+    ASSETTYPE: string
+    HOMEFACILITY: string
+}
 
 const AddEvent: FC = () => {
 
@@ -44,7 +59,44 @@ const AddEvent: FC = () => {
           ...provided,
           color: fgColor, // Color for the selected value
         }),
-      };
+    }
+
+    useEffect(() => {   
+        if(eventID) {
+            const fetchEventByID = async () => {
+                const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getEventByID`, {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`
+                    },
+                    data: {
+                        eventid: eventID
+                    }
+                })
+
+                const status = await response.status
+                if(status === 200) {
+                    const data: Event = response.data[0]
+
+                    let stDate = new Date(data.STARTDATE)
+                    let stTime = moment(stDate, "MMMM, DD YYYY HH:mm:ss").format("HH:mm")
+
+                    let enDate = new Date(data.ENDDATE)
+                    let enTime = moment(enDate, "MMMM, DD YYYY HH:mm:ss").format("HH:mm")
+
+                    setStartDate(new Date(data.STARTDATE))
+                    setEndDate(new Date(data.ENDDATE))
+                    setStartTime(stTime)
+                    setEndTime(enTime)
+                    setUserName(data.WHO)
+                    setLocation(data.LOCATION)
+                    setNumPeople(data.ATTENDEES || '')
+                    setNotes(data.EVENTNOTE)
+                    setRoom({value: data.ASSETID.toString(), label: `${data.HOMEFACILITY} | ${data.ASSETTYPE} | ${data.ASSETNAME}`})
+                }
+            }
+            fetchEventByID()
+        }
+    },[eventID])
 
     useEffect(() => {
         let storedUser = sessionStorage.getItem('user')
@@ -57,7 +109,7 @@ const AddEvent: FC = () => {
             }
         }
 
-        setStartTime('8:00')
+        setStartTime('08:00')
         setEndTime('17:00')
 
         console.log(`Now calling getAssetMembers`)
@@ -84,11 +136,11 @@ const AddEvent: FC = () => {
             const hours = time.getHours();
             const minutes = time.getMinutes();
             //   const formattedTime = `${hours % 12 === 0 ? 12 : hours % 12}:${minutes < 10 ? '0' + minutes : minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
-            const unformattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-            slots.push(unformattedTime);
+            const unformattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+            slots.push(unformattedTime)
         }
         return slots;
-    };
+    }
 
     const timeSlots = generateTimeSlots()
     
@@ -113,7 +165,7 @@ const AddEvent: FC = () => {
                     startTime: startTime,
                     endTime: endTime,
                     assetid: room?.value,
-                    eventid: '',
+                    eventid: eventID ? eventID : '',
                     who: userName,
                     where: location,
                     attendees: numPeople,
@@ -131,6 +183,30 @@ const AddEvent: FC = () => {
                     {type: 'success'}
                 )
                 
+            }
+        }
+    }
+
+    const deleteEvent = async () => {
+        if (eventID) {
+            const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=deleteEvent`, {
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`
+                },
+                data: {
+                    eventid: eventID
+                }
+            })
+
+            const status = await response.status
+            if(status === 200) {
+                setWarning(true)
+                toast(<div className='d-flex flex-column'>
+                        <h3>Success</h3>
+                        <label>Event Deleted</label>
+                    </div>, 
+                    {type: 'success'}
+                )
             }
         }
     }
@@ -370,7 +446,7 @@ const AddEvent: FC = () => {
                                         placeholder: () => 'dark:text-slate-300',
                                         singleValue: () => 'dark:text-slate-300',
                                     }}
-                                    className="select p-0 border-0 w-60"
+                                    className="select p-0 border-0 w-90"
                                     options={options}
                                     onChange={handleRoomChange}
                                     value={room}
@@ -389,14 +465,14 @@ const AddEvent: FC = () => {
                 </div>
                 <div className="card-footer py-8 flex justify-between">
                     <div>
-                        {eventID ?
-                        <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex"
-                        onClick={() => submit()}>
-                            Delete Event
-                        </button> :
                         <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex" 
                         disabled={isButtonDisabled} onClick={() => submit()}>
                             Save Event
+                        </button>
+                        {eventID &&
+                        <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex ml-2"
+                        onClick={() => deleteEvent()}>
+                            Delete Event
                         </button>}
                     </div>
                 </div>

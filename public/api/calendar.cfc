@@ -90,6 +90,40 @@
 
 </cffunction>
 
+<cffunction name="getEventByID" access="remote" output="yes">
+    <cfset eventid = ''>
+
+    <cfif isDefined('params.data')>
+        <cfset eventid = params.data.eventid>
+    </cfif>
+
+    <cftransaction isolation='read_uncommitted'>
+        <cfquery name='getEvent' datasource='corporate'>
+
+             SELECT 
+                    Asset_Schedule.eventid,
+                    Asset_Schedule.who,
+                    Asset_Schedule.attendees,
+                    Asset_Schedule.location,
+                    Asset_Schedule.startdate,
+                    Asset_Schedule.enddate,
+                    Asset_Schedule.eventnote,
+                    Asset_Schedule.assetid,
+                    Asset_Members.assetname,
+                    Asset_Members.assettype,
+                    Asset_Members.HomeFacility
+                FROM 
+                    Asset_Schedule 
+                INNER JOIN
+                    Asset_Members 
+                ON
+                    Asset_Schedule.assetid = Asset_Members.assetid
+                WHERE eventid = #eventid#
+        </cfquery>
+    </cftransaction>
+    <cfoutput>#serializeJSON(getEvent, "struct")#</cfoutput>
+</cffunction>
+
 <cffunction name="getEventsByMonth" access="remote" output="yes">
     <cfset startDate = ''>
     <cfset endDate = ''>
@@ -239,6 +273,18 @@
         </cfquery>
     </cfif>
     <cfoutput>#serializeJSON({success: true}, "struct")#</cfoutput>
+</cffunction>
+
+<cffunction  name="deleteEvent" access="remote" output="yes">
+
+    <cfargument name="eventid" default="0">
+
+    <cfquery datasource="corporate">
+        Delete from Asset_Schedule where eventid = #arguments.assetid#
+    </cfquery>
+
+    <cfoutput>#serializeJSON({success: true}, "struct")#</cfoutput>
+
 </cffunction>
 
 </cfcomponent>
