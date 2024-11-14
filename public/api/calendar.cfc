@@ -21,57 +21,118 @@
     <cfset "session.#getSiteParams.ParamName#" =  "#getSiteParams.ParamValue#"> 
 </cfloop>
 
-<cffunction  name="getEvents" access="remote" output="yes">
-
+<cffunction name="getEvents" access="remote" output="yes">
+    
     <cfparam name="form.offset" default="0">
-    <cfset StartDay = dateformat(dateadd("m",form.offset,now()),"m/1/yyyy")>
-    <cfset EndDay = "#month(startday)#/#daysinmonth(startday)#/#year(startday)#">
-    <cfset DayCount = daysinmonth(startday)>
+    <cfset StartDay = dateformat(dateadd("m", form.offset, now()), "m/1/yyyy")>
+    <cfset EndDay = "#month(StartDay)#/#daysinmonth(StartDay)#/#year(StartDay)#">
+    <cfset DayCount = daysinmonth(StartDay)>
     <cfset StartDayofWeek = dayofweek(StartDay)>
-    <cfset StartEmptyCells = StartDayOfWeek-1>
+    <cfset StartEmptyCells = StartDayofWeek - 1>
     <cfset daylist = "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday">
 
     <cftransaction isolation="read_uncommitted">
 
         <cfquery datasource="corporate" name="Types">
-            Select assettype from Asset_members group by assettype order by assettype
+            SELECT assettype 
+            FROM Asset_Members 
+            GROUP BY assettype 
+            ORDER BY assettype
         </cfquery>
+        
         <cfquery datasource="corporate" name="Facility">
-            Select homefacility from Asset_members group by homefacility order by homefacility
+            SELECT homefacility 
+            FROM Asset_Members 
+            GROUP BY homefacility 
+            ORDER BY homefacility
         </cfquery>
+        
         <cfquery datasource="corporate" name="a">
-            Select assetid,assettype,homefacility,assetname from asset_members where status IN ('Free','Available')
+            SELECT assetid, assettype, homefacility, assetname 
+            FROM Asset_Members 
+            WHERE status IN ('Free', 'Available')
         </cfquery>
 
-        <cfquery datasource="corporate" name="events">
-            Select 
-            Asset_Schedule.eventid,
-            Asset_Schedule.who,
-            Asset_Schedule.attendees,
-            Asset_Schedule.location,
-            Asset_Schedule.startdate,
-            Asset_Schedule.enddate,
-            Asset_Schedule.eventnote,
-            Asset_Schedule.assetid,
-            Asset_Members.assetname,
-            Asset_Members.assettype,
-            Asset_Members.HomeFacility
-            from 
-            Asset_Schedule 
+            <cfquery datasource="corporate" name="events">
+                SELECT 
+                    Asset_Schedule.eventid,
+                    Asset_Schedule.who,
+                    Asset_Schedule.attendees,
+                    Asset_Schedule.location,
+                    Asset_Schedule.startdate,
+                    Asset_Schedule.enddate,
+                    Asset_Schedule.eventnote,
+                    Asset_Schedule.assetid,
+                    Asset_Members.assetname,
+                    Asset_Members.assettype,
+                    Asset_Members.HomeFacility
+                FROM 
+                    Asset_Schedule 
+                INNER JOIN
+                    Asset_Members 
+                ON
+                    Asset_Schedule.assetid = Asset_Members.assetid
+                WHERE
+                (
+                startdate >= <cfqueryparam value="#StartDay#" cfsqltype="cf_sql_date"> 
+                AND startdate < <cfqueryparam value="#dateformat(dateadd('d',1,EndDay), 'yyyy-mm-dd')#" cfsqltype="cf_sql_date">
+                )
+                OR
+                (
+                enddate >= <cfqueryparam value="#StartDay#" cfsqltype="cf_sql_date"> 
+                AND enddate < <cfqueryparam value="#dateformat(dateadd('d',1,EndDay), 'yyyy-mm-dd')#" cfsqltype="cf_sql_date">
+                )
+            </cfquery>
+
+    </cftransaction>
+
+    <cfoutput>#serializeJSON(events, "struct")#</cfoutput>
+
+</cffunction>
+
+<cffunction name="getEventsByMonth" access="remote" output="yes">
+    <cfset startDate = ''>
+    <cfset endDate = ''>
+
+    <cfif isDefined('params.data')>
+        <cfset startDate = params.data.startDate>
+        <cfset endDate = params.data.endDate>
+    </cfif>
+
+    
+    <cftransaction isolation='read_uncommitted'>
+        <cfquery name='getEvent' datasource='corporate'>
+            SELECT 
+                Asset_Schedule.eventid,
+                Asset_Schedule.who,
+                Asset_Schedule.attendees,
+                Asset_Schedule.location,
+                Asset_Schedule.startdate,
+                Asset_Schedule.enddate,
+                Asset_Schedule.eventnote,
+                Asset_Schedule.assetid,
+                Asset_Members.assetname,
+                Asset_Members.assettype,
+                Asset_Members.HomeFacility
+            FROM 
+                Asset_Schedule 
             INNER JOIN
-            Asset_Members ON
-            Asset_Schedule.assetid = Asset_Members.assetid
-            where
+                Asset_Members 
+            ON
+                Asset_Schedule.assetid = Asset_Members.assetid
+            WHERE
             (
-            startdate >= '#StartDay#' AND startdate < '#dateformat(dateadd("d",1,endday),"mm/dd/yyyy")#'
+            startdate >= '#startDate#'
+            AND startdate < '#endDate#'
             )
             OR
             (
-            enddate >= '#StartDay#' AND enddate < '#dateformat(dateadd("d",1,endday),"mm/dd/yyyy")#'
+            enddate >= '#startDate#'
+            AND enddate < '#endDate#'
             )
         </cfquery>
     </cftransaction>
-    <cfoutput>#serializeJSON(events, "struct")#</cfoutput>
+    <cfoutput>#serializeJSON(getEvent, "struct")#</cfoutput>
 </cffunction>
 
 <cffunction name="getAssetMembers" access="remote" output="yes">
