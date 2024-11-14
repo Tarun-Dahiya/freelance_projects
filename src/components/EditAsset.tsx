@@ -1,5 +1,15 @@
 import { FC, useState, useEffect } from 'react'
 import { AssetMember, getAssetMembers } from '../lib/actions.ts'
+import AddAssetDialog from './AddAssetDialog.tsx'
+
+interface GroupedAssetMembers {
+    [facility: string]: AssetMember[]
+}
+
+interface Props {
+    groupedAssetMembers: GroupedAssetMembers;
+    facility: string;
+}
 
 const EditAsset: FC = () => {
 
@@ -31,17 +41,6 @@ const EditAsset: FC = () => {
         <div className="max-w-full lg:max-w-[95%] xl:max-w-[90%] 2xl:max-w-[85%] ml-auto mr-auto" 
             data-stepper="false" id="addEvent"
         >
-            {/* {warning && <ToastContainer 
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />} */}
             <div className="card">
                 <div className="card-header flex justify-between items-center gap-4 py-8">
                     <h2 className="text-2xl font-semibold text-gray-900">Edit Assets</h2> 
@@ -54,7 +53,7 @@ const EditAsset: FC = () => {
                                 <label className="text-md">
                                     Rand Whitney Assets
                                 </label>
-                                <button className="btn btn-primary">{`+ Add Asset`}</button>
+                                <AddAssetDialog room={null}/>
                             </div>
                         </div> 
                         {Object.keys(groupedAssetMembers).map(facility => (
@@ -76,7 +75,7 @@ const EditAsset: FC = () => {
                                             <td className='text-md'>{room.ASSETNAME}</td>
                                             <td className='text-md'>{room.ASSETTYPE}</td>
                                             <td className='text-md'>
-                                                <button className='btn btn-warning'>Edit</button>
+                                                <AddAssetDialog room={room}/>
                                             </td>
                                         </tr>
                                         </>
