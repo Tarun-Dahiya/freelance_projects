@@ -2,12 +2,15 @@ import { FC, useState, useEffect } from 'react'
 import DatePicker from "react-datepicker"
 import Select from 'react-select'
 import axios from 'axios'
+import { useParams } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify'
 import { AssetMember, getAssetMembers } from '../lib/actions.ts'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddEvent: FC = () => {
+
+    const { eventid: eventID } = useParams<{ eventid: string }>()
 
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [startTime, setStartTime] = useState<string | null>(null)
@@ -21,6 +24,8 @@ const AddEvent: FC = () => {
     const [warning, setWarning] = useState<boolean>(false)
     const [assetMembers, setAssetMembers] = useState<AssetMember[]>([])
     const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
+    const [bgColor, setBgColor] = useState<string>('#ffffff')
+    const [fgColor, setFgColor] = useState<string>('#000000')
 
     type OptionType = { value: string; label: string };
 
@@ -28,6 +33,18 @@ const AddEvent: FC = () => {
         selectedDate: Date | null;
         onDateChange: (date: Date | null) => void;
     };
+
+    const customStyles = {
+        control: (provided: any) => ({
+          ...provided,
+          backgroundColor: bgColor, // Apply dynamic background color
+          color: fgColor, // Apply dynamic text color
+        }),
+        singleValue: (provided: any) => ({
+          ...provided,
+          color: fgColor, // Color for the selected value
+        }),
+      };
 
     useEffect(() => {
         let storedUser = sessionStorage.getItem('user')
@@ -145,28 +162,14 @@ const AddEvent: FC = () => {
                 })
                 
                 const status = await response.status
-                const startTimeElement = document.getElementById('startTime')
-                const endTimeElement = document.getElementById('endTime')
 
                 if(status === 200) {
-                    if(startTimeElement) {
-                        startTimeElement.style.backgroundColor = 'green'
-                        // startTimeElement.style.color = 'white'
-                    }
-                    if(endTimeElement) {
-                        endTimeElement.style.backgroundColor = 'green'
-                        // endTimeElement.style.color = 'white'
-                    }
+                    setBgColor('green')
+                    setFgColor('white')
                     setIsButtonDisabled(false)
                 } else {
-                    if(startTimeElement) {
-                        startTimeElement.style.backgroundColor = 'red'
-                        // startTimeElement.style.color = 'yellow'
-                    }
-                    if(endTimeElement) {
-                        endTimeElement.style.backgroundColor = 'red'
-                        // endTimeElement.style.color = 'yellow'
-                    }
+                    setBgColor('red')
+                    setFgColor('yellow')
                     setIsButtonDisabled(true)
                 }
             } catch (error) {
@@ -216,7 +219,9 @@ const AddEvent: FC = () => {
             />}
             <div className="card">
                 <div className="card-header flex justify-between items-center gap-4 py-8">
-                    <h2 className="text-2xl font-semibold text-gray-900">Add New Event</h2>
+                    {eventID ?
+                    <h2 className="text-2xl font-semibold text-gray-900">Edit Event</h2> :
+                    <h2 className="text-2xl font-semibold text-gray-900">Add New Event</h2>}
                 </div>
                 <div className="card-body py-16">
                     <input type='hidden' name='eventid' id='eventid' />
@@ -235,9 +240,13 @@ const AddEvent: FC = () => {
                                     onChange={handleStartDateChange}
                                     dateFormat="MM/dd/yyyy"
                                     placeholderText="Select a date"
-                                    showMonthDropdown
-                                    showYearDropdown
-                                    scrollableYearDropdown
+                                    // customInput={
+                                    //     <input
+                                    //     style={{
+                                    //         backgroundColor: bgColor,
+                                    //         color: fgColor}}
+                                    //     />
+                                    // } 
                                     className="px-4 py-2 w-full border-2 border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm" 
                                     popperClassName="z-50" // To ensure the calendar is visible above other elements
                                 />
@@ -262,6 +271,7 @@ const AddEvent: FC = () => {
                                     className="select p-0 border-0 w-60"
                                     options={timeSlots.map((time) => ({ value: time, label: time }))}
                                     onChange={handleStartTimeChange}
+                                    styles={customStyles}
                                 />
                             </div>
                         </div>
@@ -279,9 +289,13 @@ const AddEvent: FC = () => {
                                     onChange={handleEndDateChange} 
                                     dateFormat="MM/dd/yyyy"
                                     placeholderText="Select a date"
-                                    showMonthDropdown
-                                    showYearDropdown
-                                    scrollableYearDropdown
+                                    // customInput={
+                                    //     <input
+                                    //     style={{
+                                    //         backgroundColor: bgColor,
+                                    //         color: fgColor}}
+                                    //     />
+                                    // } 
                                     className="px-4 py-2 w-full border-2 border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm" 
                                     popperClassName="z-50" // To ensure the calendar is visible above other elements
                                 />
@@ -306,6 +320,7 @@ const AddEvent: FC = () => {
                                     className="select p-0 border-0 w-60"
                                     options={timeSlots.map((time) => ({ value: time, label: time }))}
                                     onChange={handleEndTimeChange}
+                                    styles={customStyles}
                                 />
                             </div>
                         </div>
@@ -374,10 +389,15 @@ const AddEvent: FC = () => {
                 </div>
                 <div className="card-footer py-8 flex justify-between">
                     <div>
+                        {eventID ?
+                        <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex"
+                        onClick={() => submit()}>
+                            Delete Event
+                        </button> :
                         <button id='saveEvent' className="btn btn-primary stepper-last:inline-flex" 
                         disabled={isButtonDisabled} onClick={() => submit()}>
                             Save Event
-                        </button>
+                        </button>}
                     </div>
                 </div>
             </div>
