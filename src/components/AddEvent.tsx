@@ -41,6 +41,7 @@ const AddEvent: FC = () => {
     const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
     const [bgColor, setBgColor] = useState<string>('#ffffff')
     const [fgColor, setFgColor] = useState<string>('#000000')
+    const [showConference, setShowConference] = useState<boolean>(false)
 
     type OptionType = { value: string; label: string };
 
@@ -215,6 +216,11 @@ const AddEvent: FC = () => {
         if (selected) {
             setRoom(selected)
             checkAvail(selected)
+            if(selected.value === '9'){
+                setShowConference(true)
+            } else {
+                setShowConference(false)
+            }
         }
     }
 
@@ -237,13 +243,13 @@ const AddEvent: FC = () => {
                     }
                 })
                 
-                const status = await response.status
+                const data = await response.data
 
-                if(status === 200) {
+                if(data.includes('Available')) {
                     setBgColor('green')
                     setFgColor('white')
                     setIsButtonDisabled(false)
-                } else {
+                } else if(data.includes('Conflict with an existing event')) {
                     setBgColor('red')
                     setFgColor('yellow')
                     setIsButtonDisabled(true)
@@ -348,6 +354,7 @@ const AddEvent: FC = () => {
                                     options={timeSlots.map((time) => ({ value: time, label: time }))}
                                     onChange={handleStartTimeChange}
                                     styles={customStyles}
+                                    value={startTime ? { value: startTime, label: startTime } : null}
                                 />
                             </div>
                         </div>
@@ -397,6 +404,7 @@ const AddEvent: FC = () => {
                                     options={timeSlots.map((time) => ({ value: time, label: time }))}
                                     onChange={handleEndTimeChange}
                                     styles={customStyles}
+                                    value={endTime ? { value: endTime, label: endTime } : null}
                                 />
                             </div>
                         </div>
@@ -461,6 +469,11 @@ const AddEvent: FC = () => {
                                 <input className="input" name="fName" type="text" value={notes} onChange={(e) => setNotes(e.target.value)} />
                             </div>
                         </div>
+                        {showConference && <div className="w-1/2">
+                            <div className="flex items-center flex-wrap lg:flex-nowrap">
+                                <img src='/webservices/assetScheduling2/media/logos/atconference.jpg' alt="asset" className="w-32 h-32" />
+                            </div>
+                        </div>}
                     </div>
                 </div>
                 <div className="card-footer py-8 flex justify-between">

@@ -277,12 +277,16 @@
 
 <cffunction  name="deleteEvent" access="remote" output="yes">
 
-    <cfargument name="eventid" default="0">
+    <cfset eventid = ''>
 
-    <cfquery datasource="corporate">
-        Delete from Asset_Schedule where eventid = #arguments.assetid#
+    <cfif isDefined('params.data')>
+        <cfset eventid = params.data.eventid>
+    </cfif>
+
+    <cfquery datasource="corporate" name="deleteEv">
+        Delete from Asset_Schedule where eventid = #eventid#
     </cfquery>
-
+    
     <cfoutput>#serializeJSON({success: true}, "struct")#</cfoutput>
 
 </cffunction>
