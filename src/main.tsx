@@ -43,10 +43,10 @@ const router = createBrowserRouter(
         },
       ],
     },
-  ],
-  {
-    basename: "/assetScheduling2",
-  }
+  ]
+  // {
+  //   basename: "/assetScheduling2",
+  // }
 );
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
