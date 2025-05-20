@@ -8,9 +8,12 @@
     "build": "vite build",
     "prod": "vite build -c vite.prod.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "amplify": "amplify"
   },
   "dependencies": {
+    "@aws-amplify/cli": "^13.0.1",
+    "@aws-amplify/ui-react": "^6.11.2",
     "@floating-ui/react": "^0.26.27",
     "@fortawesome/fontawesome-pro": "^6.5.2",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -27,6 +30,7 @@
     "@fortawesome/sharp-thin-svg-icons": "^6.5.2",
     "@popperjs/core": "^2.11.8",
     "@tanstack/react-table": "^8.19.3",
+    "aws-amplify": "^6.14.4",
     "axios": "^1.7.2",
     "react": "^18.3.1",
     "react-big-calendar": "^1.12.2",

@@ -10,6 +10,7 @@ import ReportsPage from './components/reportsPage/ReportsPage.tsx'
 import AddEvent from './components/AddEvent.tsx'
 import EditAsset from './components/EditAsset.tsx'
 
+
 const router = createBrowserRouter(
   [
     {

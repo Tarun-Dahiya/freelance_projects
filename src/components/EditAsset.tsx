@@ -70,7 +70,7 @@ const EditAsset: FC = () => {
                         <div className="w-1/2">
                             <div className="flex items-center flex-wrap lg:flex-nowrap justify-between">
                                 <label className="text-md">
-                                    Rand Whitney Assets
+                                    Assets
                                 </label>
                                 {/* <AddAssetDialog room={null} newID={nextAssetID}/> */}
                                 <button className="btn btn-md btn-primary flex gap-2 items-center"
