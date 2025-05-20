@@ -52,7 +52,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room, newID, onClose }) => {
         if(newID > 0 && room === null){
 
             const insertNewAsset = async () => {
-                const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=insertNewAsset`, {
+                const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=insertNewAsset`, {
                     headers: {
                         Authorization: `${localStorage.getItem('token')}`
                     },
@@ -86,7 +86,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room, newID, onClose }) => {
     }, [room])
 
     const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=updateVal`, {
+        const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=updateVal`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             },
@@ -107,7 +107,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room, newID, onClose }) => {
 
     const handleTypeChange = async (option: OptionType | null) => {
         setType(option?.value)
-        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=updateVal`, {
+        const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=updateVal`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             },
@@ -128,7 +128,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room, newID, onClose }) => {
 
     const handleFacilityChange = async (option: OptionType | null) => {
         setFacility(option?.value)
-        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=updateVal`, {
+        const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=updateVal`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             },
@@ -151,7 +151,7 @@ const AddAssetDialog: FC<AddAssetDialogProps> = ({ room, newID, onClose }) => {
 
     const handleStatusChange = async (option: OptionType | null) => {
         setStatus(option?.value)
-        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=updateVal`, {
+        const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=updateVal`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             },

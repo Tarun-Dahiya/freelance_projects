@@ -14,7 +14,7 @@ export const defaultUser = {
     COMPANY_ID: 0,
     HOOK_URL: '',
     DATECREATED: '2021-08-31T00:00:00',
-    AVATAR: '/webservices/metronic9/media/avatars/blank.png',
+    AVATAR: '/metronic9/media/avatars/blank.png',
 }
 
 export const sampleTableData = [

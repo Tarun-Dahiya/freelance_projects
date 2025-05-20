@@ -42,7 +42,7 @@ export const getUser = async (): Promise<User> => {
         return sampleUser;
     }
     try {
-        const response = await axios.post(`/webservices/assetScheduling2/api/common.cfc?method=getUser`, {
+        const response = await axios.post(`/assetScheduling2/api/common.cfc?method=getUser`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             }
@@ -63,7 +63,7 @@ export type AppList = {
 
 export const getWebApps = async (): Promise<AppList[]> => {
     try {
-        const response = await axios.post(`/webservices/assetScheduling2/api/common.cfc?method=getWebApps`, {
+        const response = await axios.post(`/assetScheduling2/api/common.cfc?method=getWebApps`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             }
@@ -93,7 +93,7 @@ export const getWebApps = async (): Promise<AppList[]> => {
 
 export const getEvents = async (): Promise<Event[]> => {
     try {
-        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getEvents`, {
+        const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=getEvents`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             }
@@ -117,7 +117,7 @@ export type AssetMember = {
 
 export const getAssetMembers = async (): Promise<AssetMember[]> => {
     try {
-        const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getAssetMembers`, {
+        const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=getAssetMembers`, {
             headers: {
                 Authorization: `${localStorage.getItem('token')}`
             }
