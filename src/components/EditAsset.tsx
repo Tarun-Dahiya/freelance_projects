@@ -11,6 +11,7 @@ interface Props {
     facility: string;
 }
 
+//Edit Asset
 const EditAsset: FC = () => {
 
     const [assetMembers, setAssetMembers] = useState<AssetMember[]>([])

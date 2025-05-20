@@ -9,6 +9,7 @@ import { AssetMember, getAssetMembers } from '../lib/actions.ts'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'react-toastify/dist/ReactToastify.css'
 
+//Add event
 interface Event {
     EVENTID : number
     WHO: string

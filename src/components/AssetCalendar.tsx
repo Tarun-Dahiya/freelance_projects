@@ -6,6 +6,7 @@ import axios from "axios"
 import moment from "moment/moment.js"
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
+//Main Calendar
 interface Event {
     EVENTID : number
     WHO: string
