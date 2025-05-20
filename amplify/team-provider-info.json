@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-assetscheduling2-dev-5782d-authRole",
+      "UnauthRoleArn": "arn:aws:iam::707359489885:role/amplify-assetscheduling2-dev-5782d-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::707359489885:role/amplify-assetscheduling2-dev-5782d-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-assetscheduling2-dev-5782d-deployment",
+      "UnauthRoleName": "amplify-assetscheduling2-dev-5782d-unauthRole",
+      "StackName": "amplify-assetscheduling2-dev-5782d",
+      "StackId": "arn:aws:cloudformation:us-east-2:707359489885:stack/amplify-assetscheduling2-dev-5782d/ccf6e290-35b5-11f0-ba71-0620b52d1361",
+      "AmplifyAppId": "d2eoc0w995mo8l"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2eoc0w995mo8l",
+          "type": "cicd"
+        }
+      }
+    }
+  }
+}
