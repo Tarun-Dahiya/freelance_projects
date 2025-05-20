@@ -5,9 +5,8 @@ import { Outlet } from "react-router";
 import { User } from "./lib/types.ts";
 import AppContext from "./components/AppContext.tsx";
 import { useAxios } from "./lib/hooks.ts";
-import { withAuthenticator } from '@aws-amplify/ui-react';
 
-function App() {
+export default function App() {
   const [user, setUser] = useState<User>(new User())
 
   const baseURL = document.URL.split('/').slice(0, 3).join('/')
@@ -49,7 +48,5 @@ function App() {
     </AppContext.Provider>
   )
 }
-
-export default withAuthenticator(App)
 
 
