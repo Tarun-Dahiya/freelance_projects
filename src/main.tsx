@@ -9,7 +9,10 @@ import SavedSearchPage from './components/savedSearchPage/SavedSearchPage.tsx'
 import ReportsPage from './components/reportsPage/ReportsPage.tsx'
 import AddEvent from './components/AddEvent.tsx'
 import EditAsset from './components/EditAsset.tsx'
+import { Amplify } from 'aws-amplify';
+import awsExports from '../src/aws-exports.js';
 
+Amplify.configure(awsExports)
 
 const router = createBrowserRouter(
   [
