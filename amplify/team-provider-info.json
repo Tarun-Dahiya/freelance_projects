@@ -17,6 +17,9 @@
           "appId": "d2eoc0w995mo8l",
           "type": "cicd"
         }
+      },
+      "auth": {
+        "assetscheduling2d16c558e": {}
       }
     }
   }
