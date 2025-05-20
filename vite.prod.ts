@@ -17,6 +17,6 @@ export default defineConfig({
       },
     },
   },
-  base: '/assetScheduling2/',
+  base: '/',
 },
 )
