@@ -110,8 +110,8 @@ const EventRow = ({ event }: { event: Event }) => {
           </div>
         )}
       </tr>
-    );
-  };
+    )
+}
 
 const AssetCalendar: FC = () => {
 

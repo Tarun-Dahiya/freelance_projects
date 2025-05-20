@@ -77,19 +77,19 @@ export const getWebApps = async (): Promise<AppList[]> => {
     return (process.env.NODE_ENV === 'development') ? sampleAppList : []    
 }
 
-export type Event = {
-    eventid : number
-    who: string
-    attendees: string
-    location: string
-    startdate: boolean
-    enddate: boolean
-    eventnote: string
-    assetid: number
-    assetname: string
-    assettype: string
-    HomeFacility: string
-}
+// export type Event = {
+//     eventid : number
+//     who: string
+//     attendees: string
+//     location: string
+//     startdate: boolean
+//     enddate: boolean
+//     eventnote: string
+//     assetid: number
+//     assetname: string
+//     assettype: string
+//     HomeFacility: string
+// }
 
 export const getEvents = async (): Promise<Event[]> => {
     try {
@@ -99,7 +99,7 @@ export const getEvents = async (): Promise<Event[]> => {
             }
         });
         if (response.data.SUCCESS) {
-            return response.data[0];
+            return response.data;
         }
     } catch (error) {
         console.error(error);
