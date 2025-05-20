@@ -33,7 +33,7 @@ export const useAxios = <T,>(path: string, autoRequest: boolean, method?: string
             })
             console.log(path.split('method=').length > 1 ? path.split('method=')[1] : path, response.data)
             if ('INVALIDTOKEN' in response.data) {
-                window.location.href = `${baseURL}/Webservices/auth/login`
+                window.location.href = `${baseURL}/auth/login`
                 return
             }
             setData(response.data)

@@ -15,25 +15,25 @@ export const sampleUser = {
     COMPANY_ID: 0,
     HOOK_URL: '/',
     DATECREATED: '2021-08-31T00:00:00',
-    AVATAR: '/webservices/metronic9/media/avatars/blank.png',
+    AVATAR: '/metronic9/media/avatars/blank.png',
 }
 
 export const sampleAppList = [
             {
                 APPID: 1,
-                APPLICATIONIMAGE: '/webservices/metronic9/media/avatars/blank.png',
+                APPLICATIONIMAGE: '/metronic9/media/avatars/blank.png',
                 APPLICATIONURL: 'https://www.google.com',
                 APPLICATIONNAME: 'Booked App',
             },
             {
                 APPID: 2,
-                APPLICATIONIMAGE: '/webservices/metronic9/media/avatars/blank.png',
+                APPLICATIONIMAGE: '/metronic9/media/avatars/blank.png',
                 APPLICATIONURL: 'https://www.google.com',
                 APPLICATIONNAME: 'Base',
             },
             {
                 APPID: 3,
-                APPLICATIONIMAGE: '/webservices/metronic9/media/avatars/blank.png',
+                APPLICATIONIMAGE: '/metronic9/media/avatars/blank.png',
                 APPLICATIONURL: 'https://www.google.com',
                 APPLICATIONNAME: 'eCommerce',
             },

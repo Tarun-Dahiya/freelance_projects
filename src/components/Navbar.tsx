@@ -18,7 +18,7 @@ import UserSettings from "./drawers/content/UserSettings";
 const Navbar = () => {
     const [isDarkMode, setIsDarkMode] = useState<boolean>(localStorage.getItem('theme') === 'dark')
     const [themeIcon, setThemeIcon] = useState<ReactNode | null>(null)
-    const [avatar, setAvatar] = useState<string>("/webservices/metronic9/media/avatars/blank.png")
+    const [avatar, setAvatar] = useState<string>("/metronic9/media/avatars/blank.png")
     const menuOffset: string = "0px, 20px"
     const iconMenuOffset: string = "0px, 25px"
     const isDevelopment = window.location.href.split('/').slice(0, 3).join('/').includes('development')

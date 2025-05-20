@@ -11,7 +11,7 @@ export default function App() {
 
   const baseURL = document.URL.split('/').slice(0, 3).join('/')
 
-  const { request: getUser, data } = useAxios<User[]>('/Webservices/metronic9/api/common.cfc?method=getUser', false)
+  const { request: getUser, data } = useAxios<User[]>('/metronic9/api/common.cfc?method=getUser', false)
 
   useEffect(() => {
     if (!baseURL.includes('localhost')) {
@@ -26,7 +26,7 @@ export default function App() {
       setUser(data[0])
       sessionStorage.setItem('user', JSON.stringify(data[0]))
       const internal = data[0].USERLOCALE.toLowerCase() === 'internal'
-      if (!internal) { window.location.href = `${baseURL}/Webservices/auth/login` }
+      if (!internal) { window.location.href = `${baseURL}/auth/login` }
       localStorage.removeItem('datatable_1')
     }
   }, [data])

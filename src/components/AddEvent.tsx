@@ -66,7 +66,7 @@ const AddEvent: FC = () => {
     useEffect(() => {   
         if(eventID) {
             const fetchEventByID = async () => {
-                const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getEventByID`, {
+                const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=getEventByID`, {
                     headers: {
                         Authorization: `${localStorage.getItem('token')}`
                     },
@@ -157,7 +157,7 @@ const AddEvent: FC = () => {
                 {type: 'warning'}
             )
         } else {
-            const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=saveEvent`, {
+            const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=saveEvent`, {
                 headers: {
                     Authorization: `${localStorage.getItem('token')}`
                 },
@@ -191,7 +191,7 @@ const AddEvent: FC = () => {
 
     const deleteEvent = async () => {
         if (eventID) {
-            const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=deleteEvent`, {
+            const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=deleteEvent`, {
                 headers: {
                     Authorization: `${localStorage.getItem('token')}`
                 },
@@ -230,7 +230,7 @@ const AddEvent: FC = () => {
             console.log(`Checking availability for room ${selected.label} from ${startDate} ${startTime} to ${endDate} ${endTime}`)
 
             try{
-                const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=checkAvailability`, {
+                const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=checkAvailability`, {
                     headers: {
                         Authorization: `${localStorage.getItem('token')}`
                     },
@@ -472,7 +472,7 @@ const AddEvent: FC = () => {
                         </div>
                         {showConference && <div className="w-1/2">
                             <div className="flex items-center flex-wrap lg:flex-nowrap">
-                                <img src='/webservices/assetScheduling2/media/logos/atconference.jpg' alt="asset" className="w-32 h-32" />
+                                <img src='/assetScheduling2/media/logos/atconference.jpg' alt="asset" className="w-32 h-32" />
                             </div>
                         </div>}
                     </div>

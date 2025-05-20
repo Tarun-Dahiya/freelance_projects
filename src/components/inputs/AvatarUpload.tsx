@@ -2,7 +2,7 @@ import { useState, useRef, MouseEvent, useEffect } from "react";
 import axios from "axios";
 
 const AvatarUpload = ({userId, src, setAvatar}:{userId:number, src:string, setAvatar: (img:string) => void}) => {
-    const defaultImg = "/webservices/metronic9/media/avatars/blank.png";
+    const defaultImg = "/metronic9/media/avatars/blank.png";
     const [imgSrc, setImgSrc] = useState<string>(defaultImg);
     const fileInput = useRef<HTMLInputElement>(null);
 
@@ -27,7 +27,7 @@ const AvatarUpload = ({userId, src, setAvatar}:{userId:number, src:string, setAv
         try {
             const response = await axios({
                 method: 'POST',
-                url: '/webservices/metronic9/api/common.cfc?method=uploadAvatar',
+                url: '/metronic9/api/common.cfc?method=uploadAvatar',
                 headers: {
                     Authorization: `${localStorage.getItem('token')}`
                 },

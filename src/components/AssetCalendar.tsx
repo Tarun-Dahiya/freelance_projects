@@ -122,7 +122,7 @@ const AssetCalendar: FC = () => {
 
     useEffect(() => {   
         const fetchEvents = async () => {
-            const response = await axios.get(`/webservices/assetScheduling2/api/calendar.cfc?method=getEvents`, {
+            const response = await axios.get(`/assetScheduling2/api/calendar.cfc?method=getEvents`, {
                 headers: {
                     Authorization: `${localStorage.getItem('token')}`
                 }
@@ -152,7 +152,7 @@ const AssetCalendar: FC = () => {
         }
 
         try{
-            const response = await axios.post(`/webservices/assetScheduling2/api/calendar.cfc?method=getEventsByMonth`, {
+            const response = await axios.post(`/assetScheduling2/api/calendar.cfc?method=getEventsByMonth`, {
                 headers: {
                     Authorization: `${localStorage.getItem('token')}`
                 },

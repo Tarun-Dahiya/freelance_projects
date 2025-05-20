@@ -45,7 +45,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/webservices/assetScheduling2",
+    basename: "/assetScheduling2",
   }
 );
 

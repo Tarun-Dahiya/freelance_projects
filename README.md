@@ -9,7 +9,7 @@
         <system.webServer>
             <httpErrors errorMode="DetailedLocalOnly">
                 <remove statusCode="404" subStatusCode="-1" />
-                <error statusCode="404" prefixLanguageFilePath="" path="/Webservices/metronic9/index.html" responseMode="ExecuteURL" />
+                <error statusCode="404" prefixLanguageFilePath="" path="/metronic9/index.html" responseMode="ExecuteURL" />
             </httpErrors>
         </system.webServer>
     </configuration>
@@ -17,7 +17,7 @@
     ```
     update 
     ```
-    path="/Webservices/metronic9/index.html"
+    path="/metronic9/index.html"
     ```
 
 2. inside src/main.tsx update the basename with that same path.
